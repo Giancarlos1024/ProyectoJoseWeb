@@ -1,0 +1,254 @@
+/* General Styles */
+
+.contenedor-registro{
+    text-align: left;
+    display: flex;
+    flex-flow: column wrap;
+    justify-content: center;
+    align-items: center;
+    padding-bottom: 0px;
+    /* background-color: yellow; */
+  }
+  .contenedor-filtro{
+    /* background-color: #28a745; */
+    display: flex;
+    justify-content: end;
+    position: relative;
+  }
+  .contenedor-filtro > input{
+    margin-left: 5px;
+    margin-right: 5px;
+  }
+  /* Container Styles */
+  /* .container {
+    width: 80%;
+    margin: 0 auto;
+    padding: 20px;
+    background: #fff;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+    border-radius: 8px;
+    margin-top: 20px;
+  } */
+  
+  /* Header Styles */
+  h1, h2 {
+    color: #333;
+    text-align: center;
+  }
+  
+  /* Form Styles */
+  form {
+    display: flex;
+    flex-direction: row;
+    padding-bottom: 20px;
+    /* background-color: yellow; */
+    padding: 5px;
+    width: 100%;
+  }
+  form > div{
+    /* background-color: orange; */
+    margin: 5px;
+  }
+  
+  label {
+    font-weight: bold;
+    margin-bottom: 5px;
+    color: #007bff;
+    
+  }
+  
+  input {
+    padding: 10px;
+    margin-bottom: 10px;
+    border: 1px solid #ddd;
+    border-radius: 4px;
+  }
+  
+  button {
+    padding: 10px 15px;
+    border: none;
+    border-radius: 4px;
+    background-color: #007bff;
+    margin-bottom: 10px;
+    color: #fff;
+    font-size: 16px;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+  }
+  
+  .button-form:hover {
+    background-color: #0056b3;
+  }
+  
+  /* Table Styles */
+  table {
+    width: 100%;
+    border-collapse: collapse;
+    margin-top: 20px;
+    
+  }
+  
+  th, td {
+    padding: 10px;
+    border-bottom: 1px solid #ddd;
+    text-align: center;
+    font-size: 12px;
+    
+  }
+  
+  th {
+    background-color: #267bd6;
+    color: #fff;
+
+    
+  }
+  
+  tr:nth-child(even) {
+    background-color: #f9f9f9;
+  }
+  
+  button {
+    padding: 12px 12px;
+    font-size: 14px;
+  }
+  
+  button.edit {
+    background-color: #28a745;
+  }
+  
+  button.edit:hover {
+    background-color: #218838;
+  }
+  
+  button.delete {
+    background-color: #dc3545;
+    margin-left: 10px;
+  }
+  
+  button.delete:hover {
+    background-color: #c82333;
+  }
+  /* Para navegadores webkit (Chrome, Safari) */
+input[type="number"]::-webkit-inner-spin-button,
+input[type="number"]::-webkit-outer-spin-button {
+  -webkit-appearance: none;
+  margin: 0;
+}
+
+/* Para Firefox */
+input[type="number"] {
+  -moz-appearance: textfield;
+}
+
+.FiltrosNotificaciones{
+    display: flex;
+    flex-flow: row wrap;
+    /* background-color: yellow; */
+    justify-content: end;
+    align-items: center;
+    
+    
+}
+.filtros{
+    background-color: #fff;
+    width: 100px;
+    height: 40px;
+    padding: 0px;
+    margin: 0px;
+    margin: 0px 10px;
+    text-align: center; 
+}
+.filtros-button{
+    width: 90px;
+    height: 40px;
+    padding: 0px;
+    margin: 0px;
+    margin-left: 10px;
+    background-color: #28a745;
+}
+.buttonTable{
+    padding: 8px;
+    margin-left: 2px;
+}
+.button-sinot{
+  width: 80px;
+  margin: 5px 10px;
+}
+.button-sinoteditar:hover{
+  background-color: #143ae4;
+}
+
+.button-sinoteliminar:hover{
+  background-color: #c82333;
+}
+.encabezados-sinot > tr > th{
+  /* background-color: #218838; */
+  padding: 15px;
+}
+
+.contenedor-excel{
+  position: absolute;
+  display: flex;
+  flex-direction: column;
+  justify-content: start;
+  align-items: start;
+  left: 0px;
+  top: -20px;
+}
+
+.uploadIcon {
+  width: 50px; /* Ajusta el tamaño según sea necesario */
+  height: 50px;
+  cursor: pointer;
+}
+
+/* Estilos para el contenedor del archivo adjunto */
+
+
+/* Estilos para el nombre del archivo */
+.fileName {
+  margin-top: 10px;
+  font-size: 14px;
+  color: #333;
+  word-break: break-all;
+  text-align: center;
+}
+.contenedor-archivo-subido{
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  /* background-color: #0056b3; */
+  justify-content: center;
+  
+  
+  
+}
+.contenedor-excel2{
+  position: absolute;
+  left: 250px;
+  top: -20px;
+  /* background-color: #0056b3; */
+}
+.textoexcel{
+  font-size: 10px;
+  color: #6e726c;
+  font-weight: bold;
+}
+.importExcel{
+  /* background-color: yellow; */
+  /* padding: 5px; */
+  /* margin: 5px 0px; */
+  /* width: 100%; */
+}
+.buttonArchivo{
+  background-color: rgb(27, 131, 13);
+  top: 60px;
+  left: 0px;
+  font-size: 10px;
+  position: absolute;
+  padding: 8px 5px;
+  cursor: pointer;
+}
+.buttonArchivo:hover{
+  background-color: #0f0f0f;
+}

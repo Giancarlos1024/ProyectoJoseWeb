@@ -1,0 +1,56 @@
+.form-notsbb{
+    display: flex;
+    flex-direction: row;
+    /* background-color: orange; */
+    justify-content: center;
+}
+.form-notsbb > div{
+    /* background-color: greenyellow; */
+}
+.botones-bot{
+    display: flex;
+    justify-content: center;
+    align-items: end;
+}
+
+.button-notssb{
+    width: 100px;
+    height: 50px;
+    margin-left: 5px;
+}
+.contenedor-listado {
+    overflow-x: auto; /* Permite el scroll horizontal si el contenido es más ancho que el contenedor */
+    -webkit-overflow-scrolling: touch; /* Para una mejor experiencia en dispositivos táctiles */
+  }
+  
+  table {
+    width: 100%; /* Asegura que la tabla ocupe el ancho completo del contenedor */
+    border-collapse: collapse; /* Para evitar el doble borde entre celdas */
+  }
+  
+  th, td {
+    padding: 8px; /* Espaciado dentro de las celdas */
+    text-align: center; /* Alineación del texto en las celdas */
+    border-bottom: 1px solid #ddd; /* Borde inferior de las celdas */
+  }
+  
+  /* th {
+    background-color: #143ae2; 
+    padding: 15px;
+  } */
+  
+  button {
+    cursor: pointer; /* Cambia el cursor al pasar sobre el botón */
+  }
+  .tabla-notsbb{
+    width: 80px;
+  }
+  .tablebutton-editar:hover{
+    background-color: #143ae4;
+  }
+  .tablebutton-eliminar:hover{
+    background-color: red;
+  }
+  .encabezados-notssb > tr >th{
+    padding: 15px;
+  }
