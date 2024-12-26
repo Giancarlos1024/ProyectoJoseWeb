@@ -7,7 +7,7 @@ const app = express();
 const port = process.env.PORT || 3000;
 
 const corsOptions = {
-  origin: 'http://localhost:5001', // Cambia a tu URL de Render
+  origin: 'http://localhost:5173', // Cambia a tu URL de Render
   optionsSuccessStatus: 200,
 };
 // const corsOptions = {

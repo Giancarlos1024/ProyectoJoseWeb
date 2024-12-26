@@ -46,6 +46,7 @@ export const Formulario2 = () => {
 
   const [selectedRecord, setselectedRecord] = useState(null);
 
+
   useEffect(() => {
     fetchRecords();
   }, []);
@@ -236,22 +237,63 @@ export const Formulario2 = () => {
 
 
 
-  const generatePDF2 = (oficina) => {
-    const doc = new jsPDF({
-      orientation: 'landscape',
-      unit: 'px',
-      format: [300, 700] // [height, width]
-    });
+  const generatePDF2 = async () => {
 
-    doc.text('Nombre del destinatario: ESC SEC TEC 33 BENITO JUAREZ', 20, 120);
-    doc.text('Domicilio: D C JESUS MARIA', 20, 140);
-    doc.text('Entrecalles: ', 20, 160);
-    doc.text('Población: JESUS MARIA', 20, 180);
-
-
-    setPdfData(doc.output('datauristring'));
-    setSelectedPDF('pdf2'); // Establece el tipo de PDF
-    setIsModalOpen(true);
+    if (!selectedRecord) {
+      console.error('No hay oficina seleccionada');
+      return; // Salir si no hay oficina seleccionada
+  }
+    // Cargar el PDF existente (puedes usar cualquier ruta de archivo que tengas)
+        const existingPdfBytes = await fetch('/02-1-actualizado.pdf').then(res => res.arrayBuffer());
+        const pdfDoc = await PDFDocument.load(existingPdfBytes);
+        const pages = pdfDoc.getPages();
+        const firstPage = pages[0];
+        const { height } = firstPage.getSize();
+    
+        // Insertar los datos de la oficina en el PDF
+        firstPage.drawText(`${selectedRecord.Nombre}`, {
+            x: 150,
+            y: height - 238,
+            size: 7,
+            color: rgb(0, 0, 0),
+        });
+        firstPage.drawText(`${selectedRecord.Zona}`, {
+            x: 150,
+            y: height - 248,
+            size: 7,
+            color: rgb(0, 0, 0),
+        });
+        firstPage.drawText(`${selectedRecord.Agencia}`, {
+            x: 185,
+            y: height - 258,
+            size: 7,
+            color: rgb(0, 0, 0),
+        });
+        firstPage.drawText(`${selectedRecord.Notif}`, {
+            x: 300,
+            y: height - 258,
+            size: 7,
+            color: rgb(0, 0, 0),
+        });
+    
+        const yearFechaElab = new Date(selectedRecord.Elaboro).getFullYear();
+        firstPage.drawText(`${selectedRecord.Notif} / ${yearFechaElab} `, {
+          x: 285,
+          y: height - 268,
+          size: 7,
+          color: rgb(0, 0, 0),
+        });
+    
+    
+        // Guardar el PDF modificado
+        const pdfBytes = await pdfDoc.save();
+        const blob = new Blob([pdfBytes], { type: 'application/pdf' });
+        const url = URL.createObjectURL(blob);
+    
+        // Establecer el PDF y abrir el modal
+        setPdfData(url);
+        setSelectedPDF('pdf2');
+        setIsModalOpen(true);
   };
 
   const generatePDF3 = async() => {
