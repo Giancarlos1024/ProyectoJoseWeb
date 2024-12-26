@@ -283,6 +283,7 @@ export const Formulario = () => {
     setSelectedPDF('pdf1'); // Establece el tipo de PDF
     setIsModalOpen(true);
   };
+  //SE ACTUALIZO EL PDF 2 - INICIO
   const generatePDF2 = async () => {
     if (!selectedOficina) {
         console.error('No hay oficina seleccionada');
@@ -341,6 +342,7 @@ export const Formulario = () => {
     setSelectedPDF('pdf2');
     setIsModalOpen(true);
   };
+  // FIN DEL PDF2
 
   const generatePDF3 = async () => {
     if (!selectedOficina) {
