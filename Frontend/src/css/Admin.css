@@ -188,3 +188,13 @@
     justify-content: space-between;
     padding: 10px 25px;
   }
+
+  .form-selector > button{
+    margin-right: 10px;
+  }
+
+  button.active {
+    background-color: #81BB49; /* Color de fondo cuando está activo */
+    color: white; /* Color del texto cuando está activo */
+  }
+  

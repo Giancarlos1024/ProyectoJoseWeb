@@ -63,6 +63,15 @@
     border: 1px solid #ddd;
     border-radius: 4px;
   }
+  select{
+    
+    padding: 10px;
+    margin-bottom: 10px;
+    border: 1px solid #ddd;
+    border-radius: 4px;
+    width: 200px;
+    
+  }
   
   button {
     padding: 10px 15px;
@@ -251,4 +260,13 @@ input[type="number"] {
 }
 .buttonArchivo:hover{
   background-color: #0f0f0f;
+}
+
+.CamposAdicionales{
+  /* background-color: yellow; */
+  display: flex;
+  flex-direction: row;
+}
+.CamposAdicionales > div{
+  margin-right: 10px;
 }

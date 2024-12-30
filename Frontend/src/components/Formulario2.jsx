@@ -43,8 +43,87 @@ export const Formulario2 = () => {
   const [pdfData, setPdfData] = useState(null);
   const [selectedPDF, setSelectedPDF] = useState(null); // Estado para tipo de PDF
   const [userRole, setUserRole] = useState(localStorage.getItem('userRole') || 'user');
-
   const [selectedRecord, setselectedRecord] = useState(null);
+
+
+  const [poblaciones, setPoblaciones] = useState([]);
+  const [poblacionSeleccionada, setPoblacionSeleccionada] = useState(''); // Selección actual
+  const [poblacionSeleccionada2, setPoblacionSeleccionada2] = useState(''); // Selección actual
+
+  const[estado, setEstado] = useState('')
+  const[cp, setCp] = useState('')
+  const[cp2, setCp2] = useState('')
+  const[municipio, setMunicipio] = useState('')
+
+  const cpToPoblaciones = {
+    '46056': { poblaciones: ['SOCONITA MEZQUITOC'], estado: 'NAYARIT', municipio: 'MEZQUITIC' },
+    '46070': { poblaciones: ['SAN MIGUEL HUAXTITA', 'LOS LOBOS', 'POPOTITA', 'CIENEGA DE HUAIXTIT', 'SAN JUAN POPOTITA', 'MEZQUITES', 'EL TECOLOTE', 'SAN LUIS HUAIXTITA'], estado: 'NAYARIT', municipio: 'MEZQUITIC' },
+    '46072': { poblaciones: ['LA CODORNIZ'], estado: 'NAYARIT', municipio: 'MEZQUITIC' },
+    '46073': { poblaciones: ['SANTA CLARA', 'BAJIO DEL CARRIZAL', 'EL CAMPAMENTO'], estado: 'NAYARIT', municipio: 'MEZQUITIC' },
+    '46074': { poblaciones: ['SAN ANDRES COAMIATA', 'COHAMIATA', 'SAN JOSE DE COHAMIA'], estado: 'JALISCO', municipio: 'MEZQUITIC' },
+    '46075': { poblaciones: ['EL MIRADOR HUAIXTIT'], estado: 'NAYARIT', municipio: 'MEZQUITIC' },
+    '46076': { poblaciones: ['SANTA GERTRUDIS'], estado: 'NAYARIT', municipio: 'MEZQUITIC' },
+    '46083': { poblaciones: ['SAN JOSE EL TESORER'], estado: 'NAYARIT', municipio: 'MEZQUITIC' },
+    '63200': { poblaciones: ['TUXPAN (CENTRO)'], estado: 'NAYARIT', municipio: 'TUXPAN' },
+    '63202': { poblaciones: ['ANTONIO R LAURELES', 'DEPORTIVA', 'TALPITA DX11E'], estado: 'NAYARIT', municipio: 'TUXPAN' },
+    '63421': { poblaciones: ['LOS SANDOVALES', 'BUENA VISTA', 'EL ALACRAN', 'HIGUERITA VIEJA'], estado: 'ACAPONETA', municipio: 'NAYARIT' },
+  };
+
+  const cuentasDescripcion = {
+    'DX11A': '1ra Corregidora y 2d Corregidora S/N Santiago, Ixcuintla Nayarit',
+    'DX11B': 'Emiliano Zapata #24, Villa Hidalgo Nayarit',
+    'DX11C': 'Zapata #1 San Blas Nayarit',
+    'DX11D': 'Av Juarez #407 Pte Ruiz Neyarit',
+    'DX11E': 'Manuel Uribe #88 Tuxpan Nayarit',
+    'DX11F': 'Mina #150, Tecuala Nayarit',
+    'DX11G': 'Av. Prolongación Morelos #147, Acaponeta Nayarit',
+};
+
+  const obtenerDescripcionCuenta = (numeroCuenta) => {
+    const clave = numeroCuenta.substring(2, 7); // Obtén la clave entre el tercer y séptimo carácter
+    return cuentasDescripcion[clave] || 'Descripción no disponible'; // Retorna la descripción o un valor por defecto
+  };
+
+ useEffect(() => {
+    if (cp && cpToPoblaciones[cp]) {
+      const { poblaciones, estado, municipio } = cpToPoblaciones[cp];
+
+      // Establecer estado, municipio y poblaciones automáticamente
+      setEstado(estado);
+      setMunicipio(municipio);
+      setPoblaciones(poblaciones);
+      setPoblacionSeleccionada2(poblaciones[0]); // Preseleccionamos la primera colonia
+    } else {
+      // Limpiar valores si el CP no existe
+      setEstado('');
+      setMunicipio('');
+      setPoblaciones([]);
+      setPoblacionSeleccionada2('');
+    }
+  }, [cp]);
+
+
+
+  const handleEstadoChange = (e) => {
+    setEstado(e.target.value);
+    setMunicipio(''); // Reinicia el municipio cuando cambia el estado
+  };
+
+  const handleCpChange = (e) => {
+    const cpIngresado = e.target.value;
+    setCp(cpIngresado);
+  };
+
+  const handleColoniaChange = (e) => {
+    setPoblacionSeleccionada2(e.target.value);
+  };
+
+  const handleLimpiarDatos = () =>{
+    setEstado('');
+    setCp('');
+    setMunicipio('');
+    setPoblacionSeleccionada2('');
+  }
 
 
   useEffect(() => {
@@ -206,30 +285,56 @@ export const Formulario2 = () => {
     fetchRecords(newPage);
   };
   
-  const generatePDF = (record) => {
+  const generatePDF = (record,poblacionSeleccionada2, estado, cp, municipio) => {
+    setPoblacionSeleccionada2(poblacionSeleccionada2);
+    setCp2(cp);
+
     const doc = new jsPDF({
       orientation: 'landscape',
       unit: 'px',
-      format: [300, 700] // [height, width]
+      format: [300, 700],
     });
-    const logoWidth = 100; // Ajusta el tamaño del logo según sea necesario
+  
+    // Añadir el logo
+    const logoWidth = 250;
     const logoHeight = 50;
-    const logo = '/img/logopdf.jpg'; // Aquí deberías colocar la imagen codificada en base64 o la URL de la imagen
-    doc.addImage(logo, 'PNG', 20, 20, logoWidth, logoHeight);
-    doc.text(`CFE DISTRIBUCION ZONA SANTIAGO`, 20,120);
-    doc.text(`ING. JULIO CESAR RAUIZ MONTAÑEZ`, 20,140);
-    doc.text(`PRIMERA CORREGIDORA Y GRAL. NEGRETE`, 20,160);
-    doc.text(`SANTIAGO IXCUINTLA, NAYARIT. C.P. : 63300`, 20,180);
+    const logo = '/img/logoP.png'; // Cambia por la ruta o base64 del logo
+    doc.addImage(logo, 'PNG', 10, 10, logoWidth, logoHeight);
+  
+    // Encabezado
+    doc.text(`CFE SUMINISTRADOR DE SERVICIO BASICOS`, 20, 80);
+    doc.text(`ZONA SANTIAGO`, 20, 100);
+    doc.text(`PRIMERA CORREGIDORA Y GRAL. NEGRETE`, 20, 120);
+    doc.text(`SANTIAGO IXCUINTLA, NAYARIT. C.P. : 63300`, 20, 140);
+  
+    // Información dinámica de la oficina
+    const yearFechaElab = new Date(record.Elaboro).getFullYear();
+    doc.setFont('helvetica', 'normal');
+    doc.text('DOCUMENTO: NOT. AJUSTE: ', 20, 160);
+    doc.setFont('helvetica', 'bold');
+    doc.text(`${record.Notif} / ${yearFechaElab} `, 190, 160);
+  
+    // Datos dinámicos de la oficina
     doc.setFont('helvetica', 'bold');
     doc.text(`${record.Nombre}`, 450, 200);
     doc.setFont('helvetica', 'normal');
-    doc.text('Agencia: ', 450, 220);
+    doc.text('Dirección: ', 450, 220);
     doc.setFont('helvetica', 'bold');
-    doc.text(`${record.Agencia}`, 520, 220);
+    doc.text(`${record.Zona}`, 510, 220);
     doc.setFont('helvetica', 'normal');
-    doc.text(`RPU: ${record.RPU}`, 450, 240);
-    doc.text(`Zona: ${record.Zona}`, 450, 260);
-
+  
+    // **Añadir datos de población, estado, CP y municipio**
+    doc.text('POBLACION: ', 350, 240);
+    doc.setFont('helvetica', 'bold');
+    doc.text(`${poblacionSeleccionada2}, ${municipio}, ${estado}`, 430, 240);
+    doc.setFont('helvetica', 'normal');
+    doc.text('C.P: ', 450, 260);
+    doc.setFont('helvetica', 'bold');
+    doc.text(`${cp}`, 480, 260);
+    // doc.text(`ESTADO: ${estado}`, 450, 280);
+    // doc.text(`MUNICIPIO: ${municipio}`, 450, 300);
+  
+    // Guardar el PDF como Data URI
     setPdfData(doc.output('datauristring'));
     setSelectedPDF('pdf1'); // Establece el tipo de PDF
     setIsModalOpen(true);
@@ -263,18 +368,32 @@ export const Formulario2 = () => {
             size: 7,
             color: rgb(0, 0, 0),
         });
-        firstPage.drawText(`${selectedRecord.Agencia}`, {
-            x: 185,
-            y: height - 258,
-            size: 7,
-            color: rgb(0, 0, 0),
+
+        firstPage.drawText(`${poblacionSeleccionada2}`, {
+                x: 185,
+                y: height - 258,
+                size: 7,
+                color: rgb(0, 0, 0),
         });
-        firstPage.drawText(`${selectedRecord.Notif}`, {
+        firstPage.drawText(`${cp2}`, {
             x: 300,
             y: height - 258,
             size: 7,
             color: rgb(0, 0, 0),
         });
+
+        // firstPage.drawText(`${selectedRecord.Agencia}`, {
+        //     x: 185,
+        //     y: height - 258,
+        //     size: 7,
+        //     color: rgb(0, 0, 0),
+        // });
+        // firstPage.drawText(`${selectedRecord.Notif}`, {
+        //     x: 300,
+        //     y: height - 258,
+        //     size: 7,
+        //     color: rgb(0, 0, 0),
+        // });
     
         const yearFechaElab = new Date(selectedRecord.Elaboro).getFullYear();
         firstPage.drawText(`${selectedRecord.Notif} / ${yearFechaElab} `, {
@@ -307,6 +426,7 @@ export const Formulario2 = () => {
   const pdfDoc = await PDFDocument.load(existingPdfBytes);
   const pages = pdfDoc.getPages();
   const firstPage = pages[0];
+  const secondPage = pages[1];
   const { height } = firstPage.getSize();
 
   firstPage.drawText(`${selectedRecord.Nombre}`, {
@@ -432,12 +552,44 @@ export const Formulario2 = () => {
           color: rgb(0, 0, 0), // Color del texto
       });
 
-      const pdfBytes = await pdfDoc.save();
-      const blob = new Blob([pdfBytes], { type: 'application/pdf' });
-      const url = URL.createObjectURL(blob);
-      setPdfData(url);
-      setSelectedPDF('pdf3');
-      setIsModalOpen(true);
+      const drawTextWithLineBreak = (text, x, startY, size, maxCharsPerLine, secondLineX, page) => {
+      let y = startY; // La posición Y inicial
+      let startIndex = 0; // El índice inicial para cortar el texto
+
+        // Recorre el texto y divide en líneas
+        while (startIndex < text.length) {
+            const line = text.substring(startIndex, startIndex + maxCharsPerLine); // Extrae la línea de texto
+            page.drawText(line, {
+                x: x,  // Primera línea en la posición X original
+                y: y,
+                size: size,
+                color: rgb(0, 0, 0),
+            });
+
+            // Ajusta la posición Y para la siguiente línea
+            y -= size + 2; 
+
+            // Si ya hemos dibujado la primera línea, cambia la posición X para la siguiente línea
+            if (startIndex + maxCharsPerLine < text.length) {
+                x = secondLineX;  // Cambia la posición X para la segunda línea
+            }
+
+            startIndex += maxCharsPerLine; // Mover el índice para la próxima línea
+        }
+      };
+
+      // Usar la función para dibujar el texto con saltos de línea y coordenada X modificada
+      const descripcionCuenta = obtenerDescripcionCuenta(selectedRecord.Cuenta);
+      drawTextWithLineBreak(descripcionCuenta, 367, height - 205, 10, 40, 70, secondPage);
+
+
+
+    const pdfBytes = await pdfDoc.save();
+    const blob = new Blob([pdfBytes], { type: 'application/pdf' });
+    const url = URL.createObjectURL(blob);
+    setPdfData(url);
+    setSelectedPDF('pdf3');
+    setIsModalOpen(true);
   };
   const generatePDF4 = async() => {
   
@@ -888,7 +1040,7 @@ export const Formulario2 = () => {
 
   const handleOnClick = (record) => {
     setselectedRecord(record);  // Almacena la oficina en el estado
-    generatePDF(record);          // Genera el PDF
+    generatePDF(record,poblacionSeleccionada2, estado, cp, municipio);          // Genera el PDF
   };
 
 
@@ -897,7 +1049,7 @@ export const Formulario2 = () => {
     <div>
       {userRole === 'Admin' && (
         <div>
-          <h2>{editing ? 'MODIFICAR REGISTRO NOT SSB' : 'CREAR REGISTRO NOT SSB'}</h2>
+          {/* <h2>{editing ? 'MODIFICAR REGISTRO NOT SSB' : 'CREAR REGISTRO NOT SSB'}</h2>
           <form className='form-notsbb' onSubmit={handleSubmit}>
             <div>
               <div>
@@ -1100,12 +1252,66 @@ export const Formulario2 = () => {
                 </button>
               )}
             </div>
-          </form>
+          </form> */}
+            <div className="CamposAdicionales">
+              <div>
+                <label htmlFor="cp">CP</label>
+                <input
+                  type="text"
+                  value={cp}
+                  onChange={handleCpChange}
+                />
+              </div>
 
+              <div>
+                <label htmlFor="colonia">Colonia</label>
+                {poblaciones.length > 0 ? (
+                  <select
+                    value={poblacionSeleccionada2}
+                    onChange={handleColoniaChange}
+                  >
+                    <option value="">Seleccione una colonia</option>
+                    {poblaciones.map((colonia, index) => (
+                      <option key={index} value={colonia}>
+                        {colonia}
+                      </option>
+                    ))}
+                  </select>
+                ) : (
+                  <input
+                    type="text"
+                    value={poblacionSeleccionada2}
+                    onChange={(e) => setPoblacionSeleccionada2(e.target.value)}
+                    placeholder="Ingrese la colonia"
+                  />
+                )}
+              </div>
+
+              <div>
+                <label htmlFor="estado">Estado</label>
+                <input
+                  type="text"
+                  value={estado}
+                  readOnly
+                />
+              </div>
+
+              <div>
+                <label htmlFor="municipio">Municipio</label>
+                <input
+                  type="text"
+                  value={municipio}
+                  readOnly
+                />
+              </div>
+            </div>
+            <div>
+                <button type='button' onClick={handleLimpiarDatos}>Limpiar</button>
+              </div>
         </div>
 
       )}
-      <h2>REGISTROS DE NOT SSB</h2>
+      <h1>REGISTROS DE NOT SSB</h1>
       <div className='contenedor-filtro'>
         
         <input 
@@ -1143,9 +1349,9 @@ export const Formulario2 = () => {
               <th>TOTAL</th>
               <th>FECHA_U_S</th>
               <th>STATUS_A</th>
-              {userRole === 'Admin' && (
+              {/* {userRole === 'Admin' && (
                 <th>ACCIONES</th>
-              )}
+              )} */}
             </tr>
           </thead>
           <tbody>
@@ -1167,12 +1373,12 @@ export const Formulario2 = () => {
                 <td>{record.Total}</td>
                 <td>{record.Fecha_Ultimo_Status}</td>
                 <td>{record.Status_Actual}</td>
-                {userRole === 'Admin' &&(
+                {/* {userRole === 'Admin' &&(
                 <td>
                   <button className='tabla-notsbb tablebutton-editar' onClick={() => handleEdit(record.Id)}>Editar</button>
                   <button className='tabla-notsbb tablebutton-eliminar' onClick={() => handleDelete(record.Id)}>Eliminar</button>
                 </td>
-                )}
+                )} */}
               </tr>
             ))}
           </tbody>
