@@ -131,7 +131,7 @@ const Admin = () => {
           {/* Solo aparece si estamos en /admin/formulario */}
           {isFormularioRoute && (
             <>
-              <div className="form-selector">
+              {/* <div className="form-selector">
                 <button onClick={() => setFormularioSeleccionado('sinot')} className={formularioSeleccionado === 'sinot' ? 'active' : ''}>
                   SINOT
                 </button>
@@ -141,7 +141,8 @@ const Admin = () => {
               </div>
 
               {formularioSeleccionado === 'sinot' && <Formulario />}
-              {formularioSeleccionado === 'notssb' && <Formulario2 />}
+              {formularioSeleccionado === 'notssb' && <Formulario2 />} */}
+              <Formulario />
             </>
           )}
         </div>

@@ -41,8 +41,10 @@ exports.create = (req, res) => {
   });
 };
 
+//INICIO
 
-// Obtener todas las oficinas con filtros
+// Obtener todas las oficinas con filtros → MODIFICADO 3/01/2025 23:28
+// Obtener todas las oficinas con filtros → MODIFICADO 3/01/2025 23:28
 exports.getAll = (req, res) => {
   const { notif, year, page = 1, limit = 10 } = req.query;
   const offset = (page - 1) * limit;
@@ -53,12 +55,13 @@ exports.getAll = (req, res) => {
   if (notif || year) {
     sql += ' WHERE';
     if (notif) {
-      sql += ' notif = ?';
+      sql += ' `# Notif` = ?';  // Cambiado con comillas invertidas
       queryParams.push(notif);
     }
+    
     if (year) {
       if (queryParams.length > 0) sql += ' AND';
-      sql += ' YEAR(Fecha_Elab) = ?';
+      sql += ' YEAR(`Fecha Elab.`) = ?';  // Usar comillas invertidas
       queryParams.push(year);
     }
   }
@@ -78,17 +81,17 @@ exports.getAll = (req, res) => {
     if (notif || year) {
       sql += ' WHERE';
       if (notif) {
-        sql += ' notif = ?';
+        sql += ' `# Notif` = ?';  // Cambiado con comillas invertidas
         queryParams.push(notif);
       }
       if (year) {
         if (queryParams.length > 0) sql += ' AND';
-        sql += ' YEAR(Fecha_Elab) = ?';
+        sql += ' YEAR(`Fecha Elab.`) = ?';  // Usar comillas invertidas
         queryParams.push(year);
       }
     }
 
-    sql += ' ORDER BY Fecha_Elab ASC LIMIT ? OFFSET ?';
+    sql += ' ORDER BY `Fecha Elab.` ASC LIMIT ? OFFSET ?';  // Usar comillas invertidas
     queryParams.push(parseInt(limit), parseInt(offset));
 
     pool.query(sql, queryParams, (err, results) => {
@@ -101,6 +104,9 @@ exports.getAll = (req, res) => {
     });
   });
 };
+
+
+//FIN
 
 // Actualizar una oficina
 exports.update = (req, res) => {

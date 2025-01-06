@@ -79,3 +79,22 @@ INSERT INTO usuarios(usuario, contrasena, roles)
 VALUES('Admin','jose123*','Admin');
 
 SELECT * FROM usuarios;
+
+
+
+CREATE TABLE BD (
+    id INT AUTO_INCREMENT PRIMARY KEY,
+    RPU VARCHAR(50),
+    NOMBRE VARCHAR(100),
+    DIRECCION VARCHAR(255),
+    ENTRE VARCHAR(255),
+    CALLES VARCHAR(255),
+    NUMMED VARCHAR(50),
+    TARIFA VARCHAR(50),
+    RMU VARCHAR(50),
+    STS_SERVICIO VARCHAR(50),
+    TELEFONO VARCHAR(20),
+    CUENTA VARCHAR(50),
+    GEO_X DECIMAL(15, 8),  -- Aumentar la precisión para coordenadas
+    GEO_Y DECIMAL(15, 8)   -- Aumentar la precisión para coordenadas
+);
