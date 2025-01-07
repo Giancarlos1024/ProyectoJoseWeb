@@ -30,6 +30,8 @@ export const Formulario = () => {
   const[cp2, setCp2] = useState('')
   const[municipio, setMunicipio] = useState('')
 
+  const [fallaTipo, setFallaTipo] = useState(null);
+
 
   // console.log("datos general :",dataGeneral)
 
@@ -60,6 +62,10 @@ export const Formulario = () => {
     
   };
 
+
+
+
+  
   const obtenerDescripcionCuenta = (numeroCuenta) => {
     const clave = numeroCuenta.substring(2, 7); // Obtén la clave entre el tercer y séptimo carácter
     return cuentasDescripcion[clave] || 'Descripción no disponible'; // Retorna la descripción o un valor por defecto
@@ -99,7 +105,7 @@ export const Formulario = () => {
     setPoblacionSeleccionada2('');
   }
 
-  const fetchOficinas = () => {
+  const fetchGeneral = () => {
     fetch(`${apiBaseUrl}/general?${new URLSearchParams({ ...filters, page: currentPage, limit: 10 })}`)
       .then(response => response.json())
       .then(data => {
@@ -119,7 +125,7 @@ export const Formulario = () => {
   };
   
   useEffect(() => {
-    fetchOficinas();
+    fetchGeneral();
   }, []);
 
   const handleFilterChange = (e) => {
@@ -128,15 +134,17 @@ export const Formulario = () => {
   };
 
   const applyFilters = () => {
-    fetchOficinas();
+    console.log(filters); // Verifica los valores de los filtros
+    fetchGeneral();
   };
   const handlePageChange = (newPage) => {
     if (newPage >= 1 && newPage <= totalPages) {
       setCurrentPage(newPage);
-      fetchOficinas();
+      fetchGeneral();
     }
   };
-  const generatePDF = (oficina, poblacionSeleccionada2, estado, cp, municipio) => {
+  
+  const generatePDF1 = (oficina, poblacionSeleccionada2, estado, cp, municipio) => {
 
     setPoblacionSeleccionada2(poblacionSeleccionada2);
     setCp2(cp);
@@ -178,6 +186,8 @@ export const Formulario = () => {
     setSelectedPDF('pdf1'); // Establece el tipo de PDF
     setIsModalOpen(true);
   };
+
+  
   
   //SE ACTUALIZO EL PDF 2 - INICIO
   const generatePDF2 = async () => {
@@ -397,7 +407,7 @@ export const Formulario = () => {
 
     // Dibujar cada parte en posiciones específicas
     firstPage.drawText(`${day}`, {
-      x: 85,          // Posición X del día
+      x: 82,          // Posición X del día
       y: height - 340.5, // Posición Y del día
       size: 10,
       color: rgb(0, 0, 0),
@@ -753,7 +763,7 @@ export const Formulario = () => {
 
   // Dibujar cada parte en posiciones específicas
   firstPage.drawText(`${day}`, {
-    x: 88,          // Posición X del día
+    x: 82,          // Posición X del día
     y: height - 301, // Posición Y del día
     size: 10,
     color: rgb(0, 0, 0),
@@ -1085,7 +1095,7 @@ export const Formulario = () => {
 
   // Dibujar cada parte en posiciones específicas
   firstPage.drawText(`${day}`, {
-    x: 88,          // Posición X del día
+    x: 82,          // Posición X del día
     y: height - 376, // Posición Y del día
     size: 10,
     color: rgb(0, 0, 0),
@@ -1436,7 +1446,7 @@ export const Formulario = () => {
 
     // Dibujar cada parte en posiciones específicas
     firstPage.drawText(`${day}`, {
-      x: 88,          // Posición X del día
+      x: 82,          // Posición X del día
       y: height - 301, // Posición Y del día
       size: 10,
       color: rgb(0, 0, 0),
@@ -1708,6 +1718,7 @@ export const Formulario = () => {
     setIsModalOpen(false);
     setPdfData(null);
     setSelectedPDF(null); // Resetea el tipo de PDF
+    setFallaTipo(null);
   };
   const downloadPDF = () => {
     if (pdfData) {
@@ -1721,9 +1732,20 @@ export const Formulario = () => {
 
   const handleOnClick = (data) => {
     setSelectedOficina(data);  // Almacena la oficina en el estado
-    generatePDF(data, poblacionSeleccionada2, estado, cp, municipio);
-         // Genera el PDF
+  
+    // Establecer el tipo de falla y abrir el modal
+    if (data.Falla) {
+      setFallaTipo(data.Falla);  // Establece el tipo de Falla
+  
+      // Abrir el modal solo si la falla cumple con las condiciones necesarias
+      if (data.Falla.startsWith("UI") || data.Falla.startsWith("EF")|| data.Falla.startsWith("FM")) {
+        setIsModalOpen(true);  // Abre el modal
+        generatePDF1(data, poblacionSeleccionada2, estado, cp, municipio); // Genera el PDF
+      }
+    }
   };
+  
+  
 
 
   return (
@@ -1800,7 +1822,7 @@ export const Formulario = () => {
           type="text"
           name="notif"
           placeholder='Notificación'
-          value={filters.Notif}
+          value={filters.notif}  // Cambia "Notif" por "notif"
           onChange={handleFilterChange}
         />
         <input
@@ -1820,10 +1842,11 @@ export const Formulario = () => {
               <th>FECHA_ELAB</th>
               <th>KHW_TOTAL</th>
               <th>IMP_TOTAL</th>
+              <th>FALLA</th>
               <th>NOMBRE</th>
               <th>DIRECCION</th>
               <th>RPU</th>
-              <th>CIUDAD</th>
+              {/* <th>CIUDAD</th> */}
               <th>CUENTA</th>
               <th>AGENCIA</th>
             </tr>
@@ -1840,10 +1863,11 @@ export const Formulario = () => {
                 <td>{data['Fecha Elab.']?.slice(0, 10)}</td>
                 <td>{data['Khw_sinot']}</td>
                 <td>{data['Imp_Total_sinot']}</td>
+                <td>{data.Falla}</td>
                 <td>{data.Nombre_sinot}</td>
                 <td>{data.Dirección}</td>
                 <td>{data.rpu}</td>
-                <td>{data.Ciudad}</td>
+                {/* <td>{data.Ciudad}</td> */}
                 <td>{data.Cuenta}</td>
                 <td>{data.Agencia}</td>
               </tr>
@@ -1852,51 +1876,75 @@ export const Formulario = () => {
             </tbody>
         </table>
       </div>
-      <div className='pagination-controls'>
-        <button 
-          onClick={() => handlePageChange(currentPage - 1)} 
-          disabled={currentPage <= 1}
-        >
-          Anterior
-        </button>
-        <span>Página {currentPage} de {totalPages}</span>
-        <button 
-          onClick={() => handlePageChange(currentPage + 1)} 
-          disabled={currentPage >= totalPages}
-        >
-          Siguiente
-        </button>
-      </div>
-      <Modal
-        isOpen={isModalOpen}
-        onRequestClose={closeModal}
-        contentLabel="Vista Previa del PDF"
-        style={{
-          content: {
-            top: '50%',
-            left: '50%',
-            right: 'auto',
-            bottom: 'auto',
-            marginRight: '-50%',
-            transform: 'translate(-50%, -50%)',
-            width: '80%',
-            height: '80%',
-          },
-        }}
+      <div className="pagination-controls">
+      <button 
+        onClick={() => handlePageChange(currentPage - 1)} 
+        disabled={currentPage <= 1}
       >
-        <h2>Vista Previa del PDF</h2>
-        <div>
-          <button style={{margin:"0px 5px"}} onClick={() => { generatePDF(selectedPDF); }}>Sobre-M</button>
-          <button style={{margin:"0px 5px"}} onClick={() => { generatePDF2(selectedPDF); }}>ACUSES-CM</button>
-          <button style={{margin:"0px 5px"}} onClick={() => { generatePDF3(selectedPDF); }}>AR-EF</button>
-          <button style={{margin:"0px 5px"}} onClick={() => { generatePDF4(selectedPDF); }}>AR-FM</button>
-          <button style={{margin:"0px 5px"}} onClick={() => { generatePDF5(selectedPDF); }}>AR-UI-SC</button>
-          <button style={{margin:"0px 5px"}} onClick={() => { generatePDF6(selectedPDF); }}>AR-UI-CC</button>
-        </div>
-        {pdfData && <iframe src={pdfData} width="100%" height="100%"></iframe>}
-        <button style={{margin:"0px 5px"}} onClick={closeModal}>Cerrar</button>
-        <button onClick={downloadPDF}>Descargar PDF</button>
-      </Modal>
+        Anterior
+      </button>
+      <span>
+      { (currentPage - 1) * 10 + 1 } - {currentPage * 10} registros - Página {currentPage} - {totalPages * 10} Registros
+      </span>
+      <button 
+        onClick={() => handlePageChange(currentPage + 1)} 
+        disabled={currentPage >= totalPages}
+      >
+        Siguiente
+      </button>
+    </div>
+
+    <Modal
+      isOpen={isModalOpen}
+      onRequestClose={closeModal}
+      contentLabel="Vista Previa del PDF"
+      style={{
+        content: {
+          top: '50%',
+          left: '50%',
+          right: 'auto',
+          bottom: 'auto',
+          marginRight: '-50%',
+          transform: 'translate(-50%, -50%)',
+          width: '80%',
+          height: '80%',
+        },
+      }}
+    >
+      <h2>Vista Previa del PDF</h2>
+      <div>
+      {fallaTipo && fallaTipo.startsWith("UI") ? (
+        <>
+          <button style={{ margin: "0px 5px" }} onClick={() => { generatePDF1(selectedPDF); }}>Sobre-M</button>
+          <button style={{ margin: "0px 5px" }} onClick={() => { generatePDF2(selectedPDF); }}>ACUSES-CM</button>
+          <button style={{ margin: "0px 5px" }} onClick={() => { generatePDF5(selectedPDF); }}>AR-UI-SC</button>
+          <button style={{ margin: "0px 5px" }} onClick={() => { generatePDF6(selectedPDF); }}>AR-UI-CC</button>
+        </>
+      ) : fallaTipo && fallaTipo.startsWith("EF") ? (
+        <>
+          <button style={{ margin: "0px 5px" }} onClick={() => { generatePDF1(selectedPDF); }}>Sobre-M</button>
+          <button style={{ margin: "0px 5px" }} onClick={() => { generatePDF2(selectedPDF); }}>ACUSES-CM</button>
+          <button style={{ margin: "0px 5px" }} onClick={() => { generatePDF3(selectedPDF); }}>AR-EF</button>
+        </>
+      ) : fallaTipo && fallaTipo.startsWith("FM") ? (
+        <>
+          <button style={{ margin: "0px 5px" }} onClick={() => { generatePDF1(selectedPDF); }}>Sobre-M</button>
+          <button style={{ margin: "0px 5px" }} onClick={() => { generatePDF2(selectedPDF); }}>ACUSES-CM</button>
+          <button style={{ margin: "0px 5px" }} onClick={() => { generatePDF4(selectedPDF); }}>AR-FM</button>
+        </>
+      ) : (
+        <>
+          <button style={{ margin: "0px 5px" }} onClick={() => { generatePDF1(selectedPDF); }}>Sobre-M</button>
+          <button style={{ margin: "0px 5px" }} onClick={() => { generatePDF2(selectedPDF); }}>ACUSES-CM</button>
+        </>
+      )}
+
+      </div>
+      {pdfData && <iframe src={pdfData} width="100%" height="100%"></iframe>}
+      <button style={{ margin: "0px 5px" }} onClick={closeModal}>Cerrar</button>
+      <button onClick={downloadPDF}>Descargar PDF</button>
+    </Modal>
+  
     </div>
   );
 };

@@ -3,6 +3,7 @@ const multer = require('multer');
 const path = require('path');
 const xlsx = require('xlsx');
 const fs = require('fs');
+const moment = require('moment');
 
 // Configuración de almacenamiento de Multer
 const storage = multer.diskStorage({
@@ -21,20 +22,26 @@ const storage = multer.diskStorage({
 
 const upload = multer({ storage: storage }).single('file');
 
+// Función para convertir fechas de Excel al formato `YYYY-MM-DD HH:mm:ss`
+moment.locale('es'); // Para reconocer meses en español
+function convertExcelDate(excelDate) {
+  if (!excelDate) return null;
 
-const excelDateToMySQL = (excelDate) => {
-  const msPerDay = 86400000; // Número de milisegundos en un día
-  const excelEpoch = new Date(1900, 0, 1); // La fecha base de Excel es 1900-01-01
-  const date = new Date(excelEpoch.getTime() + (excelDate - 25569) * msPerDay); // Convertir Excel a JavaScript
-  return date.toISOString().slice(0, 19).replace('T', ' '); // Formato MySQL
-};
+  // Verificar si es un número (fecha serial de Excel)
+  if (typeof excelDate === 'number') {
+    return moment((excelDate - 25569) * 86400 * 1000).format('YYYY-MM-DD HH:mm:ss');
+  }
 
-function excelDateToJSDate(excelDate) {
-  var epoch = new Date(1900, 0, 1); // Enero 1, 1900
-  var milliseconds = (excelDate - 25569) * 86400 * 1000; // 25569 es el número de días desde 1900 hasta 1970 (Unix epoch)
-  return new Date(epoch.getTime() + milliseconds);
+  // Intentar convertir utilizando múltiples formatos comunes
+  const date = moment(excelDate, ['D-MMM-YY','DD/MM/YYYY HH:mm', 'D-MMM-YYYY', 'YYYY-MM-DD', 'DD/MM/YYYY', 'DD-MMM-YY', 'YYYY-MM-DD HH:mm:ss'], true);
+
+  if (!date.isValid()) {
+    console.warn('Formato de fecha inválido:', excelDate);
+    return null;
+  }
+
+  return date.format('YYYY-MM-DD HH:mm:ss');
 }
-
 
 // Controlador para manejar la subida y procesamiento del archivo
 const uploadFileNotssb = async (req, res) => {
@@ -75,14 +82,14 @@ const uploadFileNotssb = async (req, res) => {
           RPU: row['RPU'],
           Cuenta: row['Cuenta'],
           Nombre: row['Nombre'],
-          'Cálculo': excelDateToMySQL(row['Cálculo']), 
-          'Elaboró': excelDateToJSDate(row['Elaboró']), 
+          'Cálculo': convertExcelDate(row['Cálculo']), // Usando la nueva función de conversión con hora
+          'Elaboró': convertExcelDate(row['Elaboró']), // Usando la nueva función de conversión con hora
           Kwh: row['Kwh'],
           '$ Energía': row['$ Energía'],
           '$ IVA': row['$ IVA'],
           '$ DAP': row['$ DAP'],
           '$ Total': row['$ Total'],
-          'Fecha Ultimo Status': excelDateToMySQL(row['Fecha Ultimo Status']),
+          'Fecha Ultimo Status': convertExcelDate(row['Fecha Ultimo Status']), // Usando la nueva función de conversión con hora
           'Status Actual': row['Status Actual'],
           Sicoss: row['Sicoss'],
           Mapa: row['Mapa'],
