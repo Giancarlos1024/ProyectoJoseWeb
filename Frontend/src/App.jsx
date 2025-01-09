@@ -22,7 +22,7 @@ function App() {
             <Route path="/admin" element={<Admin />}>
               <Route path="panel" element={<PanelControl />} />
               <Route path="formulario" element={<Formulario />} />
-              <Route path="formulario2" element={<Formulario2 />} />
+              {/* <Route path="formulario2" element={<Formulario2 />} /> */}
             </Route>
           </Routes>
         </Router>

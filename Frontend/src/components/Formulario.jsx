@@ -1095,7 +1095,7 @@ export const Formulario = () => {
 
   // Dibujar cada parte en posiciones específicas
   firstPage.drawText(`${day}`, {
-    x: 82,          // Posición X del día
+    x: 84,          // Posición X del día
     y: height - 376, // Posición Y del día
     size: 10,
     color: rgb(0, 0, 0),
@@ -1161,10 +1161,10 @@ export const Formulario = () => {
           `${selectedOficina.Obs_notif}`,
           244,           // Posición inicial para los primeros 54 caracteres
           height - 465, // Altura inicial
-          8,            // Tamaño de texto
-          61,          // Límite de caracteres para la primera línea
+          9,            // Tamaño de texto
+          56,          // Límite de caracteres para la primera línea
           70,           // Nueva posición X para el resto
-          93            // Límite de caracteres para el resto del texto
+          89            // Límite de caracteres para el resto del texto
       );
 
       // Función para dibujar texto limitado en líneas
@@ -1222,21 +1222,21 @@ export const Formulario = () => {
       // Dibujar cada parte en posiciones específicas
       firstPage.drawText(`${day2}`, {
         x: 378,          // Posición X del día
-        y: height - 591, // Posición Y del día
+        y: height - 579, // Posición Y del día
         size: 10,
         color: rgb(0, 0, 0),
       });
 
       firstPage.drawText(`${month2}`, {
-        x: 410,          // Posición X del mes
-        y: height - 591, // Posición Y del mes
+        x: 408.5,          // Posición X del mes
+        y: height - 579, // Posición Y del mes
         size: 10,
         color: rgb(0, 0, 0),
       });
 
       firstPage.drawText(`${year2}`, {
-        x: 470,          // Posición X del año
-        y: height - 591, // Posición Y del año
+        x: 473,          // Posición X del año
+        y: height - 579, // Posición Y del año
         size: 10,
         color: rgb(0, 0, 0),
       });
@@ -1249,49 +1249,49 @@ export const Formulario = () => {
       // Dibujar cada parte en posiciones específicas
       firstPage.drawText(`${day3}`, {
         x: 510,          // Posición X del día
-        y: height - 591, // Posición Y del día
+        y: height - 579, // Posición Y del día
         size: 10,
         color: rgb(0, 0, 0),
       });
 
       firstPage.drawText(`${month3}`, {
-        x: 70,          // Posición X del mes
-        y: height - 603, // Posición Y del mes
+        x: 70.5,          // Posición X del mes
+        y: height - 591, // Posición Y del mes
         size: 10,
         color: rgb(0, 0, 0),
       });
 
       firstPage.drawText(`${year3}`, {
-        x: 110,          // Posición X del año
-        y: height - 603, // Posición Y del año
+        x: 145,          // Posición X del año
+        y: height - 591, // Posición Y del año
         size: 10,
         color: rgb(0, 0, 0),
       });
 
 
       firstPage.drawText(`${selectedOficina.Khw_sinot}`, {
-        x: 223,          // Posición X en la segunda página
-        y: height - 603, // Posición Y en la segunda página
-        size: 9,
+        x: 262,          // Posición X en la segunda página
+        y: height - 591, // Posición Y en la segunda página
+        size: 10,
         color: rgb(0, 0, 0),
       });
 
       firstPage.drawText(`N/A`, {
-        x: 380,          // Posición X en la segunda página
+        x: 365,          // Posición X en la segunda página
         y: height - 655, // Posición Y en la segunda página
         size: 10,
         color: rgb(0, 0, 0),
       });
 
       firstPage.drawText(`${selectedOficina.TARIFA}`, {
-        x: 530,          // Posición X en la segunda página
+        x: 531,          // Posición X en la segunda página
         y: height - 655, // Posición Y en la segunda página
         size: 10,
         color: rgb(0, 0, 0),
       });
 
       firstPage.drawText(`${selectedOficina['$ Total']}`, {
-        x: 280,          // Posición X en la segunda página
+        x: 218,          // Posición X en la segunda página
         y: height - 717, // Posición Y en la segunda página
         size: 10,
         color: rgb(0, 0, 0),
@@ -1299,21 +1299,21 @@ export const Formulario = () => {
 
       // Escribe en la segunda página
       secondPage.drawText(`${selectedOficina['$ Energía']}`, {
-        x: 360,          // Posición X en la segunda página
+        x: 355,          // Posición X en la segunda página
         y: height - 128, // Posición Y en la segunda página
         size: 10,
         color: rgb(0, 0, 0),
       });
 
       secondPage.drawText(`${selectedOficina['$ IVA']}`, {
-        x: 360,          // Posición X en la segunda página
+        x: 355,          // Posición X en la segunda página
         y: height - 153, // Posición Y en la segunda página
         size: 10,
         color: rgb(0, 0, 0),
       });
       
       secondPage.drawText(`${selectedOficina['$ Total']}`, {
-        x: 360,          // Posición X en la segunda página
+        x: 355,          // Posición X en la segunda página
         y: height - 175, // Posición Y en la segunda página
         size: 10,
         color: rgb(0, 0, 0),
@@ -1446,29 +1446,29 @@ export const Formulario = () => {
 
     // Dibujar cada parte en posiciones específicas
     firstPage.drawText(`${day}`, {
-      x: 82,          // Posición X del día
-      y: height - 301, // Posición Y del día
+      x: 84,          // Posición X del día
+      y: height - 301.5, // Posición Y del día
       size: 10,
       color: rgb(0, 0, 0),
     });
 
     firstPage.drawText(`${month}`, {
-      x: 118,          // Posición X del mes
-      y: height - 301, // Posición Y del mes
+      x: 115,          // Posición X del mes
+      y: height - 301.5, // Posición Y del mes
       size: 10,
       color: rgb(0, 0, 0),
     });
 
     firstPage.drawText(`${year}`, {
-      x: 165,          // Posición X del año
-      y: height - 301, // Posición Y del año
+      x: 185,          // Posición X del año
+      y: height - 301.5, // Posición Y del año
       size: 10,
       color: rgb(0, 0, 0),
     });
 
 
     firstPage.drawText(`8550`, {
-      x: 440,          // Posición X del año
+      x: 442,          // Posición X del año
       y: height - 390, // Posición Y del año
       size: 10,
       color: rgb(0, 0, 0),
@@ -1514,9 +1514,9 @@ export const Formulario = () => {
             292,           // Posición inicial para los primeros 54 caracteres
             height - 403, // Altura inicial
             9,            // Tamaño de texto
-            43,          // Límite de caracteres para la primera línea
+            45,          // Límite de caracteres para la primera línea
             70,           // Nueva posición X para el resto
-            93            // Límite de caracteres para el resto del texto
+            87            // Límite de caracteres para el resto del texto
         );
   
         // Función para dibujar texto limitado en líneas
@@ -1590,14 +1590,14 @@ export const Formulario = () => {
         });
 
         firstPage.drawText(`${month2}`, {
-          x: 400,          // Posición X del mes
+          x: 404,          // Posición X del mes
           y: height - 529, // Posición Y del mes
           size: 10,
           color: rgb(0, 0, 0),
         });
 
         firstPage.drawText(`${year2}`, {
-          x: 460,          // Posición X del año
+          x: 473,          // Posición X del año
           y: height - 529, // Posición Y del año
           size: 10,
           color: rgb(0, 0, 0),
@@ -1610,7 +1610,7 @@ export const Formulario = () => {
 
         // Dibujar cada parte en posiciones específicas
         firstPage.drawText(`${day3}`, {
-          x: 505,          // Posición X del día
+          x: 512,          // Posición X del día
           y: height - 529, // Posición Y del día
           size: 10,
           color: rgb(0, 0, 0),
@@ -1632,9 +1632,9 @@ export const Formulario = () => {
 
 
         firstPage.drawText(`${selectedOficina.Khw_sinot}`, {
-          x: 250,          // Posición X en la segunda página
+          x: 251,          // Posición X en la segunda página
           y: height - 542, // Posición Y en la segunda página
-          size: 9,
+          size: 10,
           color: rgb(0, 0, 0),
         });
 
