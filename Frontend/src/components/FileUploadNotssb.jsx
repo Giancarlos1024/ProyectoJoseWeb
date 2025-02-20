@@ -5,6 +5,7 @@ import '../css/Formulario.css'; // Asegúrate de tener la ruta correcta
 const FileUploadNotssb = () => {
   const [fileName2, setFileName2] = useState('');
   const [file, setFile2] = useState(null);
+  const [isLoading2, setIsLoading2] = useState(false); // Estado para la animación de carga
   const fileInputRef2 = useRef(null);
 
   const handleClick = () => {
@@ -26,6 +27,7 @@ const FileUploadNotssb = () => {
 
   const handleUpload2 = () => {
     if (file) {
+      setIsLoading2(true); // Activar animación de carga
       const formData = new FormData();
       formData.append('file', file);
 
@@ -36,13 +38,14 @@ const FileUploadNotssb = () => {
         .then(response => response.json())
         .then(data => {
           alert('Archivo cargado exitosamente Not ssb');
-          // Aquí puedes manejar la respuesta del servidor
-          // Limpiar el estado después de la carga si es necesario
           setFileName2('');
           setFile2(null);
         })
         .catch(error => {
           console.error('Error uploading file:', error);
+        })
+        .finally(() => {
+          setIsLoading2(false); // Desactivar animación de carga
         });
     }
   };
@@ -70,6 +73,12 @@ const FileUploadNotssb = () => {
           <button className="uploadButton buttonArchivo" onClick={handleUpload2}>
             Subir Archivo
           </button>
+        )}
+        {isLoading2 && (
+          <div className="spinner">
+            <div className="loader"></div>
+            <p>Cargando datos...</p>
+          </div>
         )}
       </div>
     </div>

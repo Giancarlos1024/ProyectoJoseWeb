@@ -22,6 +22,8 @@ export const Formulario = () => {
   const [userRole, setUserRole] = useState(localStorage.getItem('userRole') || 'user'); // Obtener rol del localStorage
   const [selectedOficina, setSelectedOficina] = useState(null);
 
+  
+
   const [poblaciones, setPoblaciones] = useState([]);
   const [poblacionSeleccionada2, setPoblacionSeleccionada2] = useState(''); // Selección actual
 
@@ -169,19 +171,19 @@ export const Formulario = () => {
     doc.setFont('helvetica', 'bold');
     doc.text(`${oficina['# Notif']} / ${yearFechaElab} `, 190, 160);
     doc.setFont('helvetica', 'bold');
-    doc.text(`${oficina.Nombre_sinot}`, 450, 200);
+    doc.text(`${oficina.Nombre_sinot}`, 350, 200);
     doc.setFont('helvetica', 'normal');
-    doc.text('Dirección: ', 450, 220);
+    doc.text('Dirección: ', 350, 220);
     doc.setFont('helvetica', 'bold');
-    doc.text(`${oficina.Dirección}`, 510, 220);
+    doc.text(`${oficina.Dirección}`, 405, 220);
     doc.setFont('helvetica', 'normal');
     doc.text('POBLACION: ', 350, 240);
     doc.setFont('helvetica', 'bold');
-    doc.text(`${poblacionSeleccionada2}, ${municipio}, ${estado}`, 430, 240);
+    doc.text(`${poblacionSeleccionada2}, ${municipio}, ${estado}`, 425, 240);
     doc.setFont('helvetica', 'normal');
-    doc.text('C.P: ', 450, 260);
+    doc.text('C.P: ', 350, 260);
     doc.setFont('helvetica', 'bold');
-    doc.text(`${cp}`, 480, 260);
+    doc.text(`${cp}`, 375, 260);
     setPdfData(doc.output('datauristring'));
     setSelectedPDF('pdf1'); // Establece el tipo de PDF
     setIsModalOpen(true);
@@ -321,7 +323,7 @@ export const Formulario = () => {
         return; // Salir si no hay oficina seleccionada
     }
 
-    const existingPdfBytes = await fetch('/01_ajuste_por_revision_EF_V3_sind.pdf').then(res => res.arrayBuffer());
+    const existingPdfBytes = await fetch('/pdf/Formato_FM_y_EF.pdf').then(res => res.arrayBuffer());
     const pdfDoc = await PDFDocument.load(existingPdfBytes);
     const pages = pdfDoc.getPages();
     const firstPage = pages[0];
@@ -329,75 +331,75 @@ export const Formulario = () => {
     const { height } = firstPage.getSize();
 
     firstPage.drawText(`${selectedOficina.Nombre_sinot}`, {
-        x: 110,
-        y: height - 202,
+        x: 73,
+        y: height - 124,
         size: 9,
         color: rgb(0, 0, 0),
     });
     firstPage.drawText(`${selectedOficina.Dirección}`, {
-        x: 120,
-        y: height - 215,
+        x: 80,
+        y: height - 135,
         size: 9,
         color: rgb(0, 0, 0),
     });
-    firstPage.drawText(`${selectedOficina.ENTRE},${selectedOficina.CALLES}`, {
-        x: 130,
-        y: height - 228,
-        size: 9,
-        color: rgb(0, 0, 0),
-    });
+  //   firstPage.drawText(`${selectedOficina.ENTRE},${selectedOficina.CALLES}`, {
+  //       x: 130,
+  //       y: height - 228,
+  //       size: 9,
+  //       color: rgb(0, 0, 0),
+  //   });
 
-    firstPage.drawText(`N/A`, {
-      x: 125,
-      y: height - 240,
-      size: 9,
-      color: rgb(0, 0, 0),
-  });
+  //   firstPage.drawText(`N/A`, {
+  //     x: 125,
+  //     y: height - 240,
+  //     size: 9,
+  //     color: rgb(0, 0, 0),
+  // });
 
     firstPage.drawText(`${selectedOficina.rpu}`, {
-        x: 102,
-        y: height - 252,
+        x: 63,
+        y: height - 146,
         size: 10,
         color: rgb(0, 0, 0),
     });
 
     firstPage.drawText(`${selectedOficina.RMU}`, {
-      x: 102,
-      y: height - 265,
+      x: 67,
+      y: height - 157,
       size: 10,
       color: rgb(0, 0, 0),
     });
 
-    firstPage.drawText(`${selectedOficina.NUMMED}`, {
-      x: 174,
-      y: height - 278,
+    firstPage.drawText(`${selectedOficina.Cuenta}`, {
+      x: 71,
+      y: height - 168,
       size: 10,
       color: rgb(0, 0, 0),
     });
 
     firstPage.drawText(`${selectedOficina.GEO_X}, ${selectedOficina.GEO_Y}`, {
-      x: 150,
-      y: height - 290,
+      x: 125,
+      y: height - 179,
       size: 10,
       color: rgb(0, 0, 0),
     });
 
 
     const yearFechaElab = new Date(selectedOficina['Fecha Elab.']).getFullYear();
-    firstPage.drawText(`${selectedOficina.Notif} / ${yearFechaElab} `, {
-      x: 510,
-      y: height - 112,
+    firstPage.drawText(`${selectedOficina.Notif}`, {
+      x: 525,
+      y: height - 90,
       size: 9,
       color: rgb(0, 0, 0),
     });
 
-    const yearFechaElab2 = new Date(selectedOficina['Fecha Elab.']).getFullYear();
-    firstPage.drawText(`${selectedOficina.Notif} / ${yearFechaElab2}`, {
-      x: 510,
-      y: height - 124,
+    firstPage.drawText(`${yearFechaElab} `, {
+      x: 550,
+      y: height - 90,
       size: 9,
       color: rgb(0, 0, 0),
     });
+
 
     // Obtener el día, mes y año por separado
     const fechaInsp = new Date(selectedOficina['Fecha Elab.']);
@@ -407,22 +409,22 @@ export const Formulario = () => {
 
     // Dibujar cada parte en posiciones específicas
     firstPage.drawText(`${day}`, {
-      x: 82,          // Posición X del día
-      y: height - 340.5, // Posición Y del día
+      x: 45,          // Posición X del día
+      y: height - 204, // Posición Y del día
       size: 10,
       color: rgb(0, 0, 0),
     });
 
     firstPage.drawText(`${month}`, {
-      x: 113,          // Posición X del mes
-      y: height - 340.5, // Posición Y del mes
+      x: 74,          // Posición X del mes
+      y: height - 204, // Posición Y del mes
       size: 10,
       color: rgb(0, 0, 0),
     });
 
     firstPage.drawText(`${year}`, {
-      x: 175,          // Posición X del año
-      y: height - 340.5, // Posición Y del año
+      x: 130,          // Posición X del año
+      y: height - 204, // Posición Y del año
       size: 10,
       color: rgb(0, 0, 0),
     });
@@ -436,22 +438,22 @@ export const Formulario = () => {
 
     // Dibujar cada parte en posiciones específicas
     firstPage.drawText(`${day2}`, {
-      x: 378,          // Posición X del día
-      y: height - 555.5, // Posición Y del día
+      x: 108,          // Posición X del día
+      y: height - 334, // Posición Y del día
       size: 10,
       color: rgb(0, 0, 0),
     });
 
     firstPage.drawText(`${month2}`, {
-      x: 404,          // Posición X del mes
-      y: height - 556, // Posición Y del mes
+      x: 136,          // Posición X del mes
+      y: height - 334, // Posición Y del mes
       size: 10,
       color: rgb(0, 0, 0),
     });
 
     firstPage.drawText(`${year2}`, {
-      x: 474,          // Posición X del año
-      y: height - 556, // Posición Y del año
+      x: 192,          // Posición X del año
+      y: height - 334, // Posición Y del año
       size: 10,
       color: rgb(0, 0, 0),
     });
@@ -463,29 +465,36 @@ export const Formulario = () => {
 
     // Dibujar cada parte en posiciones específicas
     firstPage.drawText(`${day3}`, {
-      x: 516,          // Posición X del día
-      y: height - 555.5, // Posición Y del día
+      x: 232,          // Posición X del día
+      y: height - 334, // Posición Y del día
       size: 10,
       color: rgb(0, 0, 0),
     });
 
     firstPage.drawText(`${month3}`, {
-      x: 70,          // Posición X del mes
-      y: height - 568.5, // Posición Y del mes
+      x: 265,          // Posición X del mes
+      y: height - 334, // Posición Y del mes
       size: 10,
       color: rgb(0, 0, 0),
     });
 
     firstPage.drawText(`${year3}`, {
-      x: 134,          // Posición X del año
-      y: height - 568.5, // Posición Y del año
+      x: 326,          // Posición X del año
+      y: height - 334, // Posición Y del año
       size: 10,
       color: rgb(0, 0, 0),
     });
 
     firstPage.drawText(`8550`, {
-      x: 440,          // Posición X del año
-      y: height - 404, // Posición Y del año
+      x: 362,          // Posición X del año
+      y: height - 258, // Posición Y del año
+      size: 10,
+      color: rgb(0, 0, 0),
+    });
+
+    firstPage.drawText(`No definido`, {
+      x: 35,          // Posición X del año
+      y: height - 300, // Posición Y del año
       size: 10,
       color: rgb(0, 0, 0),
     });
@@ -525,10 +534,10 @@ export const Formulario = () => {
         // Dibuja el texto de Obs_notif
         drawLimitedLineText(
             `${selectedOficina.Obs_notif}`,
-            292,          // Posición inicial para los primeros 54 caracteres
-            height - 417.5, // Altura inicial
+            120,          // Posición inicial para los primeros 54 caracteres
+            height - 270, // Altura inicial
             9,            // Tamaño de texto
-            42,           // Límite de caracteres para la primera línea
+            45,           // Límite de caracteres para la primera línea
             70,           // Nueva posición X para el resto
             92            // Límite de caracteres para el resto del texto
         );
@@ -568,65 +577,96 @@ export const Formulario = () => {
         // Dibuja el texto de Obs_edo
         drawLimitedLineText2(
             `${selectedOficina.Obs_edo}`,
-            107,      // Posición inicial para los primeros 54 caracteres
-            height - 581, // Altura inicial
+            205,      // Posición inicial para los primeros 54 caracteres
+            height - 345, // Altura inicial
             9,            // Tamaño de texto
-            85,          // Límite de caracteres para la primera línea
-            70,           // Nueva posición X para el resto
+            77,          // Límite de caracteres para la primera línea
+            35,           // Nueva posición X para el resto
             92           // Límite de caracteres para el resto del texto
         );
 
-        // Obtener la fecha actual y formatearla
-        const options = { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' };
-        const currentDate = new Date().toLocaleDateString('es-ES', options); // Formato: "miércoles, 23 de octubre de 2024"
+        // // Obtener la fecha actual y formatearla
+        // const options = { year: 'numeric', month: 'long', day: 'numeric' };
+        // const currentDate = new Date().toLocaleDateString('es-ES', options); // Formato: "miércoles, 23 de octubre de 2024"
 
-        // Dibujar la fecha en el PDF
-        firstPage.drawText(currentDate, {
-            x: 394,              // Posición X
-            y: height - 149,     // Posición Y, ajusta según sea necesario
-            size: 10,             // Tamaño de texto
-            color: rgb(0, 0, 0), // Color del texto
+        
+
+        // // Dibujar la fecha en el PDF
+        // firstPage.drawText(currentDate, {
+        //     x: 394,              // Posición X
+        //     y: height - 149,     // Posición Y, ajusta según sea necesario
+        //     size: 10,             // Tamaño de texto
+        //     color: rgb(0, 0, 0), // Color del texto
+        // });
+
+        const currentDate = new Date();
+
+        const dayValue = currentDate.getDate(); // Día
+        const monthValue = currentDate.toLocaleString('es-ES', { month: 'long' }); // Nombre del mes
+        const yearValue = currentDate.getFullYear(); // Año
+
+        // Dibujar cada parte en una posición diferente
+        firstPage.drawText(dayValue.toString(), {
+            x: 467,
+            y: height - 102,
+            size: 10,
+            color: rgb(0, 0, 0),
         });
 
+        firstPage.drawText(monthValue, {
+            x: 496, // Cambia la X para que no se sobrepongan
+            y: height - 102,
+            size: 10,
+            color: rgb(0, 0, 0),
+        });
+
+        firstPage.drawText(yearValue.toString(), {
+            x: 550, // Ajusta la posición según necesites
+            y: height - 102,
+            size: 10,
+            color: rgb(0, 0, 0),
+        });
+
+
         firstPage.drawText(`${selectedOficina.Khw_sinot}`, {
-          x: 251,          // Posición X en la segunda página
-          y: height - 569, // Posición Y en la segunda página
+          x: 433,          // Posición X en la segunda página
+          y: height - 335, // Posición Y en la segunda página
           size: 10,
           color: rgb(0, 0, 0),
         });
 
         firstPage.drawText(`${selectedOficina.TARIFA}`, {
-          x: 453,          // Posición X en la segunda página
-          y: height - 633, // Posición Y en la segunda página
+          x: 368,          // Posición X en la segunda página
+          y: height - 368, // Posición Y en la segunda página
           size: 10,
           color: rgb(0, 0, 0),
         });
 
         firstPage.drawText(`${selectedOficina['$ Total']}`, {
-          x: 99,          // Posición X en la segunda página
-          y: height - 657, // Posición Y en la segunda página
+          x: 530,          // Posición X en la segunda página
+          y: height - 379, // Posición Y en la segunda página
           size: 10,
           color: rgb(0, 0, 0),
         });
 
         // Escribe en la segunda página
-        secondPage.drawText(`${selectedOficina['$ Energía']}`, {
-          x: 340,          // Posición X en la segunda página
-          y: height - 112, // Posición Y en la segunda página
+        firstPage.drawText(`${selectedOficina['$ Energía']}`, {
+          x: 330,          // Posición X en la segunda página
+          y: height - 424, // Posición Y en la segunda página
           size: 10,
           color: rgb(0, 0, 0),
         });
 
-        secondPage.drawText(`${selectedOficina['$ IVA']}`, {
-          x: 340,          // Posición X en la segunda página
-          y: height - 132, // Posición Y en la segunda página
+        firstPage.drawText(`${selectedOficina['$ IVA']}`, {
+          x: 330,          // Posición X en la segunda página
+          y: height - 438, // Posición Y en la segunda página
           size: 10,
           color: rgb(0, 0, 0),
         });
         
-        secondPage.drawText(`${selectedOficina['$ Total']}`, {
-          x: 340,          // Posición X en la segunda página
-          y: height - 149, // Posición Y en la segunda página
+        firstPage.drawText(`${selectedOficina['$ Total']}`, {
+          x: 330,          // Posición X en la segunda página
+          y: height - 465, // Posición Y en la segunda página
           size: 10,
           color: rgb(0, 0, 0),
         });
@@ -658,7 +698,7 @@ export const Formulario = () => {
 
         // Usar la función para dibujar el texto con saltos de línea y coordenada X modificada
         const descripcionCuenta = obtenerDescripcionCuenta(selectedOficina.Cuenta);
-        drawTextWithLineBreak(descripcionCuenta, 367, height - 204.5, 10, 40, 70, secondPage);
+        drawTextWithLineBreak(descripcionCuenta, 50, height - 515, 10, 100, 70, firstPage);
 
         const pdfBytes = await pdfDoc.save();
         const blob = new Blob([pdfBytes], { type: 'application/pdf' });
@@ -677,83 +717,83 @@ export const Formulario = () => {
       return; // Salir si no hay oficina seleccionada
   }
 
-  const existingPdfBytes = await fetch('/02_ajuste_por_revision_FM_V3_sind.pdf').then(res => res.arrayBuffer());
+  const existingPdfBytes = await fetch('/pdf/Formato_FM_y_EF.pdf').then(res => res.arrayBuffer());
   const pdfDoc = await PDFDocument.load(existingPdfBytes);
   const pages = pdfDoc.getPages();
   const firstPage = pages[0];
   const secondPage = pages[1];
   const { height } = firstPage.getSize();
-  
-  
+
   firstPage.drawText(`${selectedOficina.Nombre_sinot}`, {
-      x: 110,
-      y: height - 188,
+      x: 73,
+      y: height - 124,
       size: 9,
       color: rgb(0, 0, 0),
   });
   firstPage.drawText(`${selectedOficina.Dirección}`, {
-      x: 120,
-      y: height - 200,
+      x: 80,
+      y: height - 135,
       size: 9,
       color: rgb(0, 0, 0),
   });
-  firstPage.drawText(`${selectedOficina.ENTRE},${selectedOficina.CALLES}`, {
-    x: 130,
-    y: height - 214,
-    size: 9,
-    color: rgb(0, 0, 0),
-  });
+//   firstPage.drawText(`${selectedOficina.ENTRE},${selectedOficina.CALLES}`, {
+//       x: 130,
+//       y: height - 228,
+//       size: 9,
+//       color: rgb(0, 0, 0),
+//   });
 
-  firstPage.drawText(`N/A`, {
-    x: 125,
-    y: height - 226,
-    size: 9,
-    color: rgb(0, 0, 0),
-  });
+//   firstPage.drawText(`N/A`, {
+//     x: 125,
+//     y: height - 240,
+//     size: 9,
+//     color: rgb(0, 0, 0),
+// });
 
   firstPage.drawText(`${selectedOficina.rpu}`, {
-      x: 100,
-      y: height - 238,
+      x: 63,
+      y: height - 146,
       size: 10,
       color: rgb(0, 0, 0),
   });
 
   firstPage.drawText(`${selectedOficina.RMU}`, {
-    x: 102,
-    y: height - 250,
+    x: 67,
+    y: height - 157,
     size: 10,
     color: rgb(0, 0, 0),
   });
 
-  firstPage.drawText(`${selectedOficina.NUMMED}`, {
-    x: 174,
-    y: height - 264,
+  firstPage.drawText(`${selectedOficina.Cuenta}`, {
+    x: 71,
+    y: height - 168,
     size: 10,
     color: rgb(0, 0, 0),
   });
 
   firstPage.drawText(`${selectedOficina.GEO_X}, ${selectedOficina.GEO_Y}`, {
-    x: 154,
-    y: height - 276,
+    x: 125,
+    y: height - 179,
     size: 10,
     color: rgb(0, 0, 0),
   });
 
+
   const yearFechaElab = new Date(selectedOficina['Fecha Elab.']).getFullYear();
-  firstPage.drawText(`${selectedOficina.Notif} / ${yearFechaElab} `, {
-    x: 514,
-    y: height - 110,
+  firstPage.drawText(`${selectedOficina.Notif}`, {
+    x: 525,
+    y: height - 90,
     size: 9,
     color: rgb(0, 0, 0),
   });
 
-  const yearFechaElab2 = new Date(selectedOficina['Fecha Elab.']).getFullYear();
-  firstPage.drawText(`${selectedOficina.Notif} / ${yearFechaElab2}`, {
-    x: 514,
-    y: height - 123,
+  firstPage.drawText(`${yearFechaElab} `, {
+    x: 550,
+    y: height - 90,
     size: 9,
     color: rgb(0, 0, 0),
   });
+
 
   // Obtener el día, mes y año por separado
   const fechaInsp = new Date(selectedOficina['Fecha Elab.']);
@@ -763,35 +803,95 @@ export const Formulario = () => {
 
   // Dibujar cada parte en posiciones específicas
   firstPage.drawText(`${day}`, {
-    x: 82,          // Posición X del día
-    y: height - 301, // Posición Y del día
+    x: 45,          // Posición X del día
+    y: height - 204, // Posición Y del día
     size: 10,
     color: rgb(0, 0, 0),
   });
 
   firstPage.drawText(`${month}`, {
-    x: 120,          // Posición X del mes
-    y: height - 301, // Posición Y del mes
+    x: 74,          // Posición X del mes
+    y: height - 204, // Posición Y del mes
     size: 10,
     color: rgb(0, 0, 0),
   });
 
   firstPage.drawText(`${year}`, {
-    x: 178,          // Posición X del año
-    y: height - 301, // Posición Y del año
+    x: 130,          // Posición X del año
+    y: height - 204, // Posición Y del año
     size: 10,
     color: rgb(0, 0, 0),
   });
 
+
+   // Obtener el día, mes y año por separado
+  const fechaInicio = new Date(selectedOficina['Fecha Inicio']);
+  const day2 = fechaInicio.getDate(); // Día (4)
+  const month2 = fechaInicio.toLocaleDateString('es-ES', { month: 'long' }); // Mes en texto (marzo)
+  const year2 = fechaInicio.getFullYear(); // Año (2021)
+
+  // Dibujar cada parte en posiciones específicas
+  firstPage.drawText(`${day2}`, {
+    x: 108,          // Posición X del día
+    y: height - 334, // Posición Y del día
+    size: 10,
+    color: rgb(0, 0, 0),
+  });
+
+  firstPage.drawText(`${month2}`, {
+    x: 136,          // Posición X del mes
+    y: height - 334, // Posición Y del mes
+    size: 10,
+    color: rgb(0, 0, 0),
+  });
+
+  firstPage.drawText(`${year2}`, {
+    x: 192,          // Posición X del año
+    y: height - 334, // Posición Y del año
+    size: 10,
+    color: rgb(0, 0, 0),
+  });
+
+  const fechaFinal = new Date(selectedOficina['Fecha Final']);
+  const day3 = fechaFinal.getDate(); // Día (4)
+  const month3 = fechaFinal.toLocaleDateString('es-ES', { month: 'long' }); // Mes en texto (marzo)
+  const year3 = fechaFinal.getFullYear(); // Año (2021)
+
+  // Dibujar cada parte en posiciones específicas
+  firstPage.drawText(`${day3}`, {
+    x: 232,          // Posición X del día
+    y: height - 334, // Posición Y del día
+    size: 10,
+    color: rgb(0, 0, 0),
+  });
+
+  firstPage.drawText(`${month3}`, {
+    x: 263,          // Posición X del mes
+    y: height - 334, // Posición Y del mes
+    size: 10,
+    color: rgb(0, 0, 0),
+  });
+
+  firstPage.drawText(`${year3}`, {
+    x: 326,          // Posición X del año
+    y: height - 334, // Posición Y del año
+    size: 10,
+    color: rgb(0, 0, 0),
+  });
 
   firstPage.drawText(`8550`, {
-    x: 440,          // Posición X del año
-    y: height - 390, // Posición Y del año
+    x: 362,          // Posición X del año
+    y: height - 258, // Posición Y del año
     size: 10,
     color: rgb(0, 0, 0),
   });
 
-
+  firstPage.drawText(`No definido`, {
+    x: 35,          // Posición X del año
+    y: height - 300, // Posición Y del año
+    size: 10,
+    color: rgb(0, 0, 0),
+  });
 
   // Función para dibujar texto limitado en líneas
   const drawLimitedLineText = (text, x, startY, size, limit, newPositionX, charLimitRest) => {
@@ -828,12 +928,12 @@ export const Formulario = () => {
       // Dibuja el texto de Obs_notif
       drawLimitedLineText(
           `${selectedOficina.Obs_notif}`,
-          295,          // Posición inicial para los primeros 54 caracteres
-          height - 405, // Altura inicial
+          120,          // Posición inicial para los primeros 54 caracteres
+          height - 270, // Altura inicial
           9,            // Tamaño de texto
-          43,           // Límite de caracteres para la primera línea
-          70,           // Nueva posición X para el resto
-          93            // Límite de caracteres para el resto del texto
+          80,           // Límite de caracteres para la primera línea
+          36,           // Nueva posición X para el resto
+          92            // Límite de caracteres para el resto del texto
       );
 
       // Función para dibujar texto limitado en líneas
@@ -871,157 +971,128 @@ export const Formulario = () => {
       // Dibuja el texto de Obs_edo
       drawLimitedLineText2(
           `${selectedOficina.Obs_edo}`,
-          223,           // Posición inicial para los primeros 54 caracteres
-          height - 470, // Altura inicial
+          197,      // Posición inicial para los primeros 54 caracteres
+          height - 345, // Altura inicial
           9,            // Tamaño de texto
-          69,          // Límite de caracteres para la primera línea
-          70,           // Nueva posición X para el resto
-          92            // Límite de caracteres para el resto del texto
+          77,          // Límite de caracteres para la primera línea
+          35,           // Nueva posición X para el resto
+          92           // Límite de caracteres para el resto del texto
       );
 
-      // Obtener la fecha actual y formatearla
-      const options = { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' };
-      const currentDate = new Date().toLocaleDateString('es-ES', options); // Formato: "miércoles, 23 de octubre de 2024"
+      // // Obtener la fecha actual y formatearla
+      // const options = { year: 'numeric', month: 'long', day: 'numeric' };
+      // const currentDate = new Date().toLocaleDateString('es-ES', options); // Formato: "miércoles, 23 de octubre de 2024"
 
-      // Dibujar la fecha en el PDF
-      firstPage.drawText(currentDate, {
-          x: 394,              // Posición X
-          y: height - 148,     // Posición Y, ajusta según sea necesario
-          size: 10,             // Tamaño de texto
-          color: rgb(0, 0, 0), // Color del texto
+      
+
+      // // Dibujar la fecha en el PDF
+      // firstPage.drawText(currentDate, {
+      //     x: 394,              // Posición X
+      //     y: height - 149,     // Posición Y, ajusta según sea necesario
+      //     size: 10,             // Tamaño de texto
+      //     color: rgb(0, 0, 0), // Color del texto
+      // });
+
+      const currentDate = new Date();
+
+      const dayValue = currentDate.getDate(); // Día
+      const monthValue = currentDate.toLocaleString('es-ES', { month: 'long' }); // Nombre del mes
+      const yearValue = currentDate.getFullYear(); // Año
+
+      // Dibujar cada parte en una posición diferente
+      firstPage.drawText(dayValue.toString(), {
+          x: 467,
+          y: height - 102,
+          size: 10,
+          color: rgb(0, 0, 0),
       });
 
-    // Obtener el día, mes y año por separado
-    const fechaInicio = new Date(selectedOficina['Fecha Inicio']);
-    const day2 = fechaInicio.getDate(); // Día (4)
-    const month2 = fechaInicio.toLocaleDateString('es-ES', { month: 'long' }); // Mes en texto (marzo)
-    const year2 = fechaInicio.getFullYear(); // Año (2021)
+      firstPage.drawText(monthValue, {
+          x: 496, // Cambia la X para que no se sobrepongan
+          y: height - 102,
+          size: 10,
+          color: rgb(0, 0, 0),
+      });
 
-    // Dibujar cada parte en posiciones específicas
-    firstPage.drawText(`${day2}`, {
-      x: 296,          // Posición X del día
-      y: height - 537, // Posición Y del día
-      size: 10,
-      color: rgb(0, 0, 0),
-    });
-
-    firstPage.drawText(`${month2}`, {
-      x: 321,          // Posición X del mes
-      y: height - 537, // Posición Y del mes
-      size: 10,
-      color: rgb(0, 0, 0),
-    });
-
-    firstPage.drawText(`${year2}`, {
-      x: 390,          // Posición X del año
-      y: height - 537, // Posición Y del año
-      size: 10,
-      color: rgb(0, 0, 0),
-    });
-
-    const fechaFinal = new Date(selectedOficina['Fecha Final']);
-    const day3 = fechaFinal.getDate(); // Día (4)
-    const month3 = fechaFinal.toLocaleDateString('es-ES', { month: 'long' }); // Mes en texto (marzo)
-    const year3 = fechaFinal.getFullYear(); // Año (2021)
-
-    // Dibujar cada parte en posiciones específicas
-    firstPage.drawText(`${day3}`, {
-      x: 436,          // Posición X del día
-      y: height - 537, // Posición Y del día
-      size: 10,
-      color: rgb(0, 0, 0),
-    });
-
-    firstPage.drawText(`${month3}`, {
-      x: 460,          // Posición X del mes
-      y: height - 537, // Posición Y del mes
-      size: 10,
-      color: rgb(0, 0, 0),
-    });
-
-    firstPage.drawText(`${year3}`, {
-      x: 517,          // Posición X del año
-      y: height - 537, // Posición Y del año
-      size: 10,
-      color: rgb(0, 0, 0),
-    });
+      firstPage.drawText(yearValue.toString(), {
+          x: 550, // Ajusta la posición según necesites
+          y: height - 102,
+          size: 10,
+          color: rgb(0, 0, 0),
+      });
 
 
-    firstPage.drawText(`${selectedOficina.Khw_sinot}`, {
-      x: 145,          // Posición X en la segunda página
-      y: height - 550, // Posición Y en la segunda página
-      size: 10,
-      color: rgb(0, 0, 0),
-    });
+      firstPage.drawText(`${selectedOficina.Khw_sinot}`, {
+        x: 433,          // Posición X en la segunda página
+        y: height - 335, // Posición Y en la segunda página
+        size: 10,
+        color: rgb(0, 0, 0),
+      });
 
-    firstPage.drawText(`${selectedOficina.TARIFA}`, {
-      x: 452,          // Posición X en la segunda página
-      y: height - 587, // Posición Y en la segunda página
-      size: 10,
-      color: rgb(0, 0, 0),
-    });
+      firstPage.drawText(`${selectedOficina.TARIFA}`, {
+        x: 368,          // Posición X en la segunda página
+        y: height - 368, // Posición Y en la segunda página
+        size: 10,
+        color: rgb(0, 0, 0),
+      });
 
-    firstPage.drawText(`${selectedOficina['$ Total']}`, {
-      x: 305,          // Posición X en la segunda página
-      y: height - 613, // Posición Y en la segunda página
-      size: 10,
-      color: rgb(0, 0, 0),
-    });
+      firstPage.drawText(`${selectedOficina['$ Total']}`, {
+        x: 530,          // Posición X en la segunda página
+        y: height - 379, // Posición Y en la segunda página
+        size: 10,
+        color: rgb(0, 0, 0),
+      });
 
-    // Escribe en la segunda página
-    secondPage.drawText(`${selectedOficina['$ Energía']}`, {
-      x: 360,          // Posición X en la segunda página
-      y: height - 100, // Posición Y en la segunda página
-      size: 10,
-      color: rgb(0, 0, 0),
-    });
+      // Escribe en la segunda página
+      firstPage.drawText(`${selectedOficina['$ Energía']}`, {
+        x: 330,          // Posición X en la segunda página
+        y: height - 424, // Posición Y en la segunda página
+        size: 10,
+        color: rgb(0, 0, 0),
+      });
 
-    secondPage.drawText(`${selectedOficina['$ IVA']}`, {
-      x: 360,          // Posición X en la segunda página
-      y: height - 117, // Posición Y en la segunda página
-      size: 10,
-      color: rgb(0, 0, 0),
-    });
-    
-    secondPage.drawText(`${selectedOficina['$ Total']}`, {
-      x: 360,          // Posición X en la segunda página
-      y: height - 135, // Posición Y en la segunda página
-      size: 10,
-      color: rgb(0, 0, 0),
-    });
+      firstPage.drawText(`${selectedOficina['$ IVA']}`, {
+        x: 330,          // Posición X en la segunda página
+        y: height - 438, // Posición Y en la segunda página
+        size: 10,
+        color: rgb(0, 0, 0),
+      });
+      
+      firstPage.drawText(`${selectedOficina['$ Total']}`, {
+        x: 330,          // Posición X en la segunda página
+        y: height - 465, // Posición Y en la segunda página
+        size: 10,
+        color: rgb(0, 0, 0),
+      });
+      const drawTextWithLineBreak = (text, x, startY, size, maxCharsPerLine, secondLineX, page) => {
+        let y = startY; // La posición Y inicial
+        let startIndex = 0; // El índice inicial para cortar el texto
 
+        // Recorre el texto y divide en líneas
+        while (startIndex < text.length) {
+            const line = text.substring(startIndex, startIndex + maxCharsPerLine); // Extrae la línea de texto
+            page.drawText(line, {
+                x: x,  // Primera línea en la posición X original
+                y: y,
+                size: size,
+                color: rgb(0, 0, 0),
+            });
 
-    const drawTextWithLineBreak = (text, x, startY, size, maxCharsPerLine, secondLineX, page) => {
-      let y = startY; // La posición Y inicial
-      let startIndex = 0; // El índice inicial para cortar el texto
+            // Ajusta la posición Y para la siguiente línea
+            y -= size + 2; 
 
-      // Recorre el texto y divide en líneas
-      while (startIndex < text.length) {
-          const line = text.substring(startIndex, startIndex + maxCharsPerLine); // Extrae la línea de texto
-          page.drawText(line, {
-              x: x,  // Primera línea en la posición X original
-              y: y,
-              size: size,
-              color: rgb(0, 0, 0),
-          });
+            // Si ya hemos dibujado la primera línea, cambia la posición X para la siguiente línea
+            if (startIndex + maxCharsPerLine < text.length) {
+                x = secondLineX;  // Cambia la posición X para la segunda línea
+            }
 
-          // Ajusta la posición Y para la siguiente línea
-          y -= size + 2; 
+            startIndex += maxCharsPerLine; // Mover el índice para la próxima línea
+        }
+      };
 
-          // Si ya hemos dibujado la primera línea, cambia la posición X para la siguiente línea
-          if (startIndex + maxCharsPerLine < text.length) {
-              x = secondLineX;  // Cambia la posición X para la segunda línea
-          }
-
-          startIndex += maxCharsPerLine; // Mover el índice para la próxima línea
-      }
-    };
-
-    // Usar la función para dibujar el texto con saltos de línea y coordenada X modificada
-    const descripcionCuenta = obtenerDescripcionCuenta(selectedOficina.Cuenta);
-    drawTextWithLineBreak(descripcionCuenta, 367, height - 191, 10, 40, 70, secondPage);
-
-
+      // Usar la función para dibujar el texto con saltos de línea y coordenada X modificada
+      const descripcionCuenta = obtenerDescripcionCuenta(selectedOficina.Cuenta);
+      drawTextWithLineBreak(descripcionCuenta, 50, height - 515, 10, 100, 70, firstPage);
 
       const pdfBytes = await pdfDoc.save();
       const blob = new Blob([pdfBytes], { type: 'application/pdf' });
@@ -1037,7 +1108,7 @@ export const Formulario = () => {
     return; // Salir si no hay oficina seleccionada
   }
 
-  const existingPdfBytes = await fetch('/03_ajuste_por_revision_UI_sin_contrato_V3_sind.pdf').then(res => res.arrayBuffer());
+  const existingPdfBytes = await fetch('/pdf/FormatoCobroAjuste_sin_contrato.pdf').then(res => res.arrayBuffer());
   const pdfDoc = await PDFDocument.load(existingPdfBytes);
   const pages = pdfDoc.getPages();
   const firstPage = pages[0];
@@ -1045,44 +1116,43 @@ export const Formulario = () => {
   const { height } = firstPage.getSize();
 
   firstPage.drawText(`${selectedOficina.Nombre_sinot}`, {
-      x: 192,
-      y: height - 212,
+      x: 124,
+      y: height - 122.5,
       size: 9,
       color: rgb(0, 0, 0),
   });
   firstPage.drawText(`${selectedOficina.Dirección}`, {
-      x: 120,
-      y: height - 224,
+      x: 82,
+      y: height - 132.5,
       size: 9,
       color: rgb(0, 0, 0),
   });
 
-  firstPage.drawText(`${selectedOficina.ENTRE}, ${selectedOficina.CALLES}`, {
-    x: 132,
-    y: height - 238,
-    size: 10,
-    color: rgb(0, 0, 0),
-  });
+  // firstPage.drawText(`${selectedOficina.ENTRE}, ${selectedOficina.CALLES}`, {
+  //   x: 132,
+  //   y: height - 238,
+  //   size: 10,
+  //   color: rgb(0, 0, 0),
+  // });
 
-  firstPage.drawText(`N/A`, {
-    x: 124,
-    y: height - 250,
-    size: 10,
-    color: rgb(0, 0, 0),
-  });
+  // firstPage.drawText(`N/A`, {
+  //   x: 124,
+  //   y: height - 250,
+  //   size: 10,
+  //   color: rgb(0, 0, 0),
+  // });
 
   const yearFechaElab = new Date(selectedOficina['Fecha Elab.']).getFullYear();
-  firstPage.drawText(`${selectedOficina.Notif} / ${yearFechaElab} `, {
-    x: 483,
-    y: height - 96,
+  firstPage.drawText(`${selectedOficina.Notif}`, {
+    x: 534,
+    y: height - 90,
     size: 9,
     color: rgb(0, 0, 0),
   });
 
-  const yearFechaElab2 = new Date(selectedOficina['Fecha Elab.']).getFullYear();
-  firstPage.drawText(`${selectedOficina.Notif} / ${yearFechaElab2}`, {
-    x: 483,
-    y: height - 110,
+  firstPage.drawText(`${yearFechaElab} `, {
+    x: 557,
+    y: height - 90,
     size: 9,
     color: rgb(0, 0, 0),
   });
@@ -1095,30 +1165,30 @@ export const Formulario = () => {
 
   // Dibujar cada parte en posiciones específicas
   firstPage.drawText(`${day}`, {
-    x: 84,          // Posición X del día
-    y: height - 376, // Posición Y del día
+    x: 48,          // Posición X del día
+    y: height - 205.5, // Posición Y del día
     size: 10,
     color: rgb(0, 0, 0),
   });
 
   firstPage.drawText(`${month}`, {
-    x: 120,          // Posición X del mes
-    y: height - 376, // Posición Y del mes
+    x: 72,          // Posición X del mes
+    y: height - 205.5, // Posición Y del mes
     size: 10,
     color: rgb(0, 0, 0),
   });
 
   firstPage.drawText(`${year}`, {
-    x: 178,          // Posición X del año
-    y: height - 376, // Posición Y del año
+    x: 120.5,          // Posición X del año
+    y: height - 205.5, // Posición Y del año
     size: 10,
     color: rgb(0, 0, 0),
   });
 
 
   firstPage.drawText(`8550`, {
-    x: 388,          // Posición X del año
-    y: height - 452, // Posición Y del año
+    x: 295,          // Posición X del año
+    y: height - 255, // Posición Y del año
     size: 10,
     color: rgb(0, 0, 0),
   });
@@ -1159,11 +1229,11 @@ export const Formulario = () => {
       // Dibuja el texto de Obs_notif
       drawLimitedLineText(
           `${selectedOficina.Obs_notif}`,
-          244,           // Posición inicial para los primeros 54 caracteres
-          height - 465, // Altura inicial
+          36,           // Posición inicial para los primeros 54 caracteres
+          height - 300, // Altura inicial
           9,            // Tamaño de texto
-          56,          // Límite de caracteres para la primera línea
-          70,           // Nueva posición X para el resto
+          99,          // Límite de caracteres para la primera línea
+          36,           // Nueva posición X para el resto
           89            // Límite de caracteres para el resto del texto
       );
 
@@ -1199,18 +1269,33 @@ export const Formulario = () => {
           }
       };
 
-      // Obtener la fecha actual y formatearla
-      const options = { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' };
-      const currentDate = new Date().toLocaleDateString('es-ES', options); // Formato: "miércoles, 23 de octubre de 2024"
+      const currentDate = new Date();
 
-      // Dibujar la fecha en el PDF
-      firstPage.drawText(currentDate, {
-          x: 393,              // Posición X
-          y: height - 135,     // Posición Y, ajusta según sea necesario
-          size: 10,             // Tamaño de texto
-          color: rgb(0, 0, 0), // Color del texto
-      });
+        const dayValue = currentDate.getDate(); // Día
+        const monthValue = currentDate.toLocaleString('es-ES', { month: 'long' }); // Nombre del mes
+        const yearValue = currentDate.getFullYear(); // Año
 
+        // Dibujar cada parte en una posición diferente
+        firstPage.drawText(dayValue.toString(), {
+            x: 467,
+            y: height - 100.5,
+            size: 10,
+            color: rgb(0, 0, 0),
+        });
+
+        firstPage.drawText(monthValue, {
+            x: 496, // Cambia la X para que no se sobrepongan
+            y: height - 100.5,
+            size: 10,
+            color: rgb(0, 0, 0),
+        });
+
+        firstPage.drawText(yearValue.toString(), {
+            x: 550, // Ajusta la posición según necesites
+            y: height - 100.5,
+            size: 10,
+            color: rgb(0, 0, 0),
+        });
 
 
       // Obtener el día, mes y año por separado
@@ -1221,22 +1306,22 @@ export const Formulario = () => {
 
       // Dibujar cada parte en posiciones específicas
       firstPage.drawText(`${day2}`, {
-        x: 378,          // Posición X del día
-        y: height - 579, // Posición Y del día
+        x: 105,          // Posición X del día
+        y: height - 330, // Posición Y del día
         size: 10,
         color: rgb(0, 0, 0),
       });
 
       firstPage.drawText(`${month2}`, {
-        x: 408.5,          // Posición X del mes
-        y: height - 579, // Posición Y del mes
+        x: 128,          // Posición X del mes
+        y: height - 330, // Posición Y del mes
         size: 10,
         color: rgb(0, 0, 0),
       });
 
       firstPage.drawText(`${year2}`, {
-        x: 473,          // Posición X del año
-        y: height - 579, // Posición Y del año
+        x: 177.5,          // Posición X del año
+        y: height - 330, // Posición Y del año
         size: 10,
         color: rgb(0, 0, 0),
       });
@@ -1248,73 +1333,73 @@ export const Formulario = () => {
 
       // Dibujar cada parte en posiciones específicas
       firstPage.drawText(`${day3}`, {
-        x: 510,          // Posición X del día
-        y: height - 579, // Posición Y del día
+        x: 210,          // Posición X del día
+        y: height - 330, // Posición Y del día
         size: 10,
         color: rgb(0, 0, 0),
       });
 
       firstPage.drawText(`${month3}`, {
-        x: 70.5,          // Posición X del mes
-        y: height - 591, // Posición Y del mes
+        x: 233,          // Posición X del mes
+        y: height - 330, // Posición Y del mes
         size: 10,
         color: rgb(0, 0, 0),
       });
 
       firstPage.drawText(`${year3}`, {
-        x: 145,          // Posición X del año
-        y: height - 591, // Posición Y del año
+        x: 280.5,          // Posición X del año
+        y: height - 330, // Posición Y del año
         size: 10,
         color: rgb(0, 0, 0),
       });
 
 
       firstPage.drawText(`${selectedOficina.Khw_sinot}`, {
-        x: 262,          // Posición X en la segunda página
-        y: height - 591, // Posición Y en la segunda página
+        x: 375,          // Posición X en la segunda página
+        y: height - 330, // Posición Y en la segunda página
         size: 10,
         color: rgb(0, 0, 0),
       });
 
       firstPage.drawText(`N/A`, {
-        x: 365,          // Posición X en la segunda página
-        y: height - 655, // Posición Y en la segunda página
+        x: 130,          // Posición X en la segunda página
+        y: height - 340, // Posición Y en la segunda página
         size: 10,
         color: rgb(0, 0, 0),
       });
 
       firstPage.drawText(`${selectedOficina.TARIFA}`, {
-        x: 531,          // Posición X en la segunda página
-        y: height - 655, // Posición Y en la segunda página
+        x: 190,          // Posición X en la segunda página
+        y: height - 382, // Posición Y en la segunda página
         size: 10,
         color: rgb(0, 0, 0),
       });
 
       firstPage.drawText(`${selectedOficina['$ Total']}`, {
-        x: 218,          // Posición X en la segunda página
-        y: height - 717, // Posición Y en la segunda página
+        x: 530,          // Posición X en la segunda página
+        y: height - 413.5, // Posición Y en la segunda página
         size: 10,
         color: rgb(0, 0, 0),
       });
 
       // Escribe en la segunda página
-      secondPage.drawText(`${selectedOficina['$ Energía']}`, {
-        x: 355,          // Posición X en la segunda página
-        y: height - 128, // Posición Y en la segunda página
+      firstPage.drawText(`${selectedOficina['$ Energía']}`, {
+        x: 333,          // Posición X en la segunda página
+        y: height - 457, // Posición Y en la segunda página
         size: 10,
         color: rgb(0, 0, 0),
       });
 
-      secondPage.drawText(`${selectedOficina['$ IVA']}`, {
-        x: 355,          // Posición X en la segunda página
-        y: height - 153, // Posición Y en la segunda página
+      firstPage.drawText(`${selectedOficina['$ IVA']}`, {
+        x: 333,          // Posición X en la segunda página
+        y: height - 470, // Posición Y en la segunda página
         size: 10,
         color: rgb(0, 0, 0),
       });
       
-      secondPage.drawText(`${selectedOficina['$ Total']}`, {
-        x: 355,          // Posición X en la segunda página
-        y: height - 175, // Posición Y en la segunda página
+      firstPage.drawText(`${selectedOficina['$ Total']}`, {
+        x: 333,          // Posición X en la segunda página
+        y: height - 499, // Posición Y en la segunda página
         size: 10,
         color: rgb(0, 0, 0),
       });
@@ -1348,7 +1433,7 @@ export const Formulario = () => {
 
       // Usar la función para dibujar el texto con saltos de línea y coordenada X modificada
       const descripcionCuenta = obtenerDescripcionCuenta(selectedOficina.Cuenta);
-      drawTextWithLineBreak(descripcionCuenta, 70, height - 230, 10, 80, 70, secondPage);
+      drawTextWithLineBreak(descripcionCuenta, 158, height - 533, 10, 80, 70, firstPage);
 
 
 
@@ -1366,7 +1451,7 @@ export const Formulario = () => {
       return; // Salir si no hay oficina seleccionada
     }
   
-    const existingPdfBytes = await fetch('/04_ajuste_por_revision_UI_con_contrato_V3_sind.pdf').then(res => res.arrayBuffer());
+    const existingPdfBytes = await fetch('/pdf/FormatoCobroAjuste_con_contrato.pdf').then(res => res.arrayBuffer());
     const pdfDoc = await PDFDocument.load(existingPdfBytes);
     const pages = pdfDoc.getPages();
     const firstPage = pages[0];
@@ -1374,68 +1459,67 @@ export const Formulario = () => {
     const { height } = firstPage.getSize();
   
     firstPage.drawText(`${selectedOficina.Nombre_sinot}`, {
-        x: 110,
-        y: height - 188,
+        x: 72,
+        y: height - 111,
         size: 9,
         color: rgb(0, 0, 0),
     });
     firstPage.drawText(`${selectedOficina.Dirección}`, {
-        x: 120,
-        y: height - 200,
+        x: 81,
+        y: height - 121.5,
         size: 9,
         color: rgb(0, 0, 0),
     });
 
-    firstPage.drawText(`${selectedOficina.ENTRE},${selectedOficina.CALLES}`, {
-      x: 130,
-      y: height - 214,
-      size: 9,
-      color: rgb(0, 0, 0),
-    });
+    // firstPage.drawText(`${selectedOficina.ENTRE},${selectedOficina.CALLES}`, {
+    //   x: 130,
+    //   y: height - 214,
+    //   size: 9,
+    //   color: rgb(0, 0, 0),
+    // });
   
     firstPage.drawText(`${selectedOficina.rpu}`, {
-        x: 100,
-        y: height - 226,
+        x: 63,
+        y: height - 131,
         size: 10,
         color: rgb(0, 0, 0),
     });
   
     firstPage.drawText(`${selectedOficina.RMU}`, {
-      x: 102,
-      y: height - 238,
+      x: 63,
+      y: height - 142,
       size: 10,
       color: rgb(0, 0, 0),
     });
   
-    firstPage.drawText(`${selectedOficina.NUMMED}`, {
-      x: 174,
-      y: height - 251,
+    firstPage.drawText(`${selectedOficina.Cuenta}`, {
+      x: 66,
+      y: height - 152,
       size: 10,
       color: rgb(0, 0, 0),
     });
   
     firstPage.drawText(`${selectedOficina.GEO_X}, ${selectedOficina.GEO_Y}`, {
-      x: 154,
-      y: height - 263,
+      x: 120,
+      y: height - 163,
       size: 10,
       color: rgb(0, 0, 0),
     });
   
     const yearFechaElab = new Date(selectedOficina['Fecha Elab.']).getFullYear();
-    firstPage.drawText(`${selectedOficina.Notif} / ${yearFechaElab} `, {
-      x: 514,
-      y: height - 110,
-      size: 9,
-      color: rgb(0, 0, 0),
-    });
-  
-    const yearFechaElab2 = new Date(selectedOficina['Fecha Elab.']).getFullYear();
-    firstPage.drawText(`${selectedOficina.Notif} / ${yearFechaElab2}`, {
-      x: 514,
-      y: height - 123,
-      size: 9,
-      color: rgb(0, 0, 0),
-    });
+  firstPage.drawText(`${selectedOficina.Notif}`, {
+    x: 534,
+    y: height - 79,
+    size: 9,
+    color: rgb(0, 0, 0),
+  });
+
+  firstPage.drawText(`${yearFechaElab} `, {
+    x: 558,
+    y: height - 79,
+    size: 9,
+    color: rgb(0, 0, 0),
+  });
 
 
     // Obtener el día, mes y año por separado
@@ -1446,30 +1530,30 @@ export const Formulario = () => {
 
     // Dibujar cada parte en posiciones específicas
     firstPage.drawText(`${day}`, {
-      x: 84,          // Posición X del día
-      y: height - 301.5, // Posición Y del día
+      x: 47,          // Posición X del día
+      y: height - 185, // Posición Y del día
       size: 10,
       color: rgb(0, 0, 0),
     });
 
     firstPage.drawText(`${month}`, {
-      x: 115,          // Posición X del mes
-      y: height - 301.5, // Posición Y del mes
+      x: 72,          // Posición X del mes
+      y: height - 185, // Posición Y del mes
       size: 10,
       color: rgb(0, 0, 0),
     });
 
     firstPage.drawText(`${year}`, {
-      x: 185,          // Posición X del año
-      y: height - 301.5, // Posición Y del año
+      x: 125,          // Posición X del año
+      y: height - 185, // Posición Y del año
       size: 10,
       color: rgb(0, 0, 0),
     });
 
 
     firstPage.drawText(`8550`, {
-      x: 442,          // Posición X del año
-      y: height - 390, // Posición Y del año
+      x: 340,          // Posición X del año
+      y: height - 237, // Posición Y del año
       size: 10,
       color: rgb(0, 0, 0),
     });
@@ -1511,11 +1595,11 @@ export const Formulario = () => {
         // Dibuja el texto de Obs_notif
         drawLimitedLineText(
             `${selectedOficina.Obs_notif}`,
-            292,           // Posición inicial para los primeros 54 caracteres
-            height - 403, // Altura inicial
+            36,           // Posición inicial para los primeros 54 caracteres
+            height - 277, // Altura inicial
             9,            // Tamaño de texto
-            45,          // Límite de caracteres para la primera línea
-            70,           // Nueva posición X para el resto
+            99,          // Límite de caracteres para la primera línea
+            36,           // Nueva posición X para el resto
             87            // Límite de caracteres para el resto del texto
         );
   
@@ -1554,25 +1638,43 @@ export const Formulario = () => {
         //Dibuja el texto de Obs_edo
         drawLimitedLineText2(
             `${selectedOficina.Obs_edo}`,
-            105,           // Posición inicial para los primeros 54 caracteres
-            height - 555, // Altura inicial
-            9,            // Tamaño de texto
-            85,          // Límite de caracteres para la primera línea
-            70,           // Nueva posición X para el resto
-            92           // Límite de caracteres para el resto del texto
+            225,           // Posición inicial para los primeros 54 caracteres
+            height - 320, // Altura inicial
+            8,            // Tamaño de texto
+            78,          // Límite de caracteres para la primera línea
+            35,           // Nueva posición X para el resto
+            120           // Límite de caracteres para el resto del texto
         );
   
         // Obtener la fecha actual y formatearla
-        const options = { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' };
-        const currentDate = new Date().toLocaleDateString('es-ES', options); // Formato: "miércoles, 23 de octubre de 2024"
-  
-        // Dibujar la fecha en el PDF
-        firstPage.drawText(currentDate, {
-            x: 393,              // Posición X
-            y: height - 148,     // Posición Y, ajusta según sea necesario
-            size: 10,             // Tamaño de texto
-            color: rgb(0, 0, 0), // Color del texto
+        const currentDate = new Date();
+
+        const dayValue = currentDate.getDate(); // Día
+        const monthValue = currentDate.toLocaleString('es-ES', { month: 'long' }); // Nombre del mes
+        const yearValue = currentDate.getFullYear(); // Año
+
+        // Dibujar cada parte en una posición diferente
+        firstPage.drawText(dayValue.toString(), {
+            x: 467,
+            y: height - 90,
+            size: 10,
+            color: rgb(0, 0, 0),
         });
+
+        firstPage.drawText(monthValue, {
+            x: 498, // Cambia la X para que no se sobrepongan
+            y: height - 90,
+            size: 10,
+            color: rgb(0, 0, 0),
+        });
+
+        firstPage.drawText(yearValue.toString(), {
+            x: 550, // Ajusta la posición según necesites
+            y: height - 90,
+            size: 10,
+            color: rgb(0, 0, 0),
+        });
+
   
 
             // Obtener el día, mes y año por separado
@@ -1583,22 +1685,22 @@ export const Formulario = () => {
 
         // Dibujar cada parte en posiciones específicas
         firstPage.drawText(`${day2}`, {
-          x: 379,          // Posición X del día
-          y: height - 529, // Posición Y del día
+          x: 182,          // Posición X del día
+          y: height - 310, // Posición Y del día
           size: 10,
           color: rgb(0, 0, 0),
         });
 
         firstPage.drawText(`${month2}`, {
-          x: 404,          // Posición X del mes
-          y: height - 529, // Posición Y del mes
+          x: 208,          // Posición X del mes
+          y: height - 310, // Posición Y del mes
           size: 10,
           color: rgb(0, 0, 0),
         });
 
         firstPage.drawText(`${year2}`, {
-          x: 473,          // Posición X del año
-          y: height - 529, // Posición Y del año
+          x: 263,          // Posición X del año
+          y: height - 310, // Posición Y del año
           size: 10,
           color: rgb(0, 0, 0),
         });
@@ -1610,66 +1712,66 @@ export const Formulario = () => {
 
         // Dibujar cada parte en posiciones específicas
         firstPage.drawText(`${day3}`, {
-          x: 512,          // Posición X del día
-          y: height - 529, // Posición Y del día
+          x: 293,          // Posición X del día
+          y: height - 310, // Posición Y del día
           size: 10,
           color: rgb(0, 0, 0),
         });
 
         firstPage.drawText(`${month3}`, {
-          x: 70,          // Posición X del mes
-          y: height -542, // Posición Y del mes
+          x: 318,          // Posición X del mes
+          y: height - 310, // Posición Y del mes
           size: 10,
           color: rgb(0, 0, 0),
         });
 
         firstPage.drawText(`${year3}`, {
-          x: 136,          // Posición X del año
-          y: height - 542, // Posición Y del año
+          x: 375,          // Posición X del año
+          y: height - 310, // Posición Y del año
           size: 10,
           color: rgb(0, 0, 0),
         });
 
 
         firstPage.drawText(`${selectedOficina.Khw_sinot}`, {
-          x: 251,          // Posición X en la segunda página
-          y: height - 542, // Posición Y en la segunda página
+          x: 480,          // Posición X en la segunda página
+          y: height - 310, // Posición Y en la segunda página
           size: 10,
           color: rgb(0, 0, 0),
         });
 
         firstPage.drawText(`${selectedOficina.TARIFA}`, {
-          x: 450,          // Posición X en la segunda página
-          y: height - 605, // Posición Y en la segunda página
+          x: 370,          // Posición X en la segunda página
+          y: height - 350, // Posición Y en la segunda página
           size: 10,
           color: rgb(0, 0, 0),
         });
 
         firstPage.drawText(`${selectedOficina['$ Total']}`, {
-          x: 100,          // Posición X en la segunda página
-          y: height - 630, // Posición Y en la segunda página
+          x: 533,          // Posición X en la segunda página
+          y: height - 362, // Posición Y en la segunda página
           size: 10,
           color: rgb(0, 0, 0),
         });
 
         // Escribe en la segunda página
-        secondPage.drawText(`${selectedOficina['$ Energía']}`, {
-          x: 365,          // Posición X en la segunda página
-          y: height - 86, // Posición Y en la segunda página
+        firstPage.drawText(`${selectedOficina['$ Energía']}`, {
+          x: 320,          // Posición X en la segunda página
+          y: height - 408, // Posición Y en la segunda página
           size: 10,
           color: rgb(0, 0, 0),
         });
 
-        secondPage.drawText(`${selectedOficina['$ IVA']}`, {
-          x: 365,          // Posición X en la segunda página
-          y: height - 105, // Posición Y en la segunda página
+        firstPage.drawText(`${selectedOficina['$ IVA']}`, {
+          x: 320,          // Posición X en la segunda página
+          y: height - 421, // Posición Y en la segunda página
           size: 10,
           color: rgb(0, 0, 0),
         });
         
-        secondPage.drawText(`${selectedOficina['$ Total']}`, {
-          x: 365,          // Posición X en la segunda página
-          y: height - 124, // Posición Y en la segunda página
+        firstPage.drawText(`${selectedOficina['$ Total']}`, {
+          x: 320,          // Posición X en la segunda página
+          y: height - 449, // Posición Y en la segunda página
           size: 10,
           color: rgb(0, 0, 0),
         });
@@ -1703,7 +1805,7 @@ export const Formulario = () => {
 
         // Usar la función para dibujar el texto con saltos de línea y coordenada X modificada
         const descripcionCuenta = obtenerDescripcionCuenta(selectedOficina.Cuenta);
-        drawTextWithLineBreak(descripcionCuenta, 367, height - 178, 10, 40, 70, secondPage);
+        drawTextWithLineBreak(descripcionCuenta, 35, height - 495, 10, 120, 120, firstPage);
 
 
         const pdfBytes = await pdfDoc.save();
@@ -1750,7 +1852,7 @@ export const Formulario = () => {
 
   return (
     <div>
-      {userRole === 'Admin' && (
+      
       <div>
         <div className="CamposAdicionales">
           <div>
@@ -1808,7 +1910,7 @@ export const Formulario = () => {
           <button type='button' onClick={handleLimpiarDatos}>Limpiar</button>
         </div>
       </div>
-      )}
+      
       <h1>REGISTROS DE SINOT</h1>
       <div className='contenedor-filtro'>
         {userRole === 'Admin' && (

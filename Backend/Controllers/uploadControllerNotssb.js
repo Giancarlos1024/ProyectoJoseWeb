@@ -43,6 +43,15 @@ function convertExcelDate(excelDate) {
   return date.format('YYYY-MM-DD HH:mm:ss');
 }
 
+// Función para dividir los datos en bloques de tamaño `batchSize`
+function chunkArray(array, size) {
+  const result = [];
+  for (let i = 0; i < array.length; i += size) {
+    result.push(array.slice(i, i + size));
+  }
+  return result;
+}
+
 // Controlador para manejar la subida y procesamiento del archivo
 const uploadFileNotssb = async (req, res) => {
   try {
@@ -82,14 +91,14 @@ const uploadFileNotssb = async (req, res) => {
           RPU: row['RPU'],
           Cuenta: row['Cuenta'],
           Nombre: row['Nombre'],
-          'Cálculo': convertExcelDate(row['Cálculo']), // Usando la nueva función de conversión con hora
-          'Elaboró': convertExcelDate(row['Elaboró']), // Usando la nueva función de conversión con hora
+          'Cálculo': convertExcelDate(row['Cálculo']),
+          'Elaboró': convertExcelDate(row['Elaboró']),
           Kwh: row['Kwh'],
           '$ Energía': row['$ Energía'],
           '$ IVA': row['$ IVA'],
           '$ DAP': row['$ DAP'],
           '$ Total': row['$ Total'],
-          'Fecha Ultimo Status': convertExcelDate(row['Fecha Ultimo Status']), // Usando la nueva función de conversión con hora
+          'Fecha Ultimo Status': convertExcelDate(row['Fecha Ultimo Status']),
           'Status Actual': row['Status Actual'],
           Sicoss: row['Sicoss'],
           Mapa: row['Mapa'],
@@ -123,19 +132,43 @@ const uploadFileNotssb = async (req, res) => {
       row.Mapa,
     ]);
 
-    // Eliminar todos los registros existentes antes de insertar nuevos datos (si es necesario)
+    const batchSize = 5000;  // Tamaño del lote
+
+    // Dividir los datos en bloques de 5000 registros
+    const batches = chunkArray(values, batchSize);
+
+    // Eliminar todos los registros existentes antes de insertar nuevos datos
     const deleteSql = 'DELETE FROM excel_db_not_ssb';
     await pool.promise().query(deleteSql);
 
-    // Consulta SQL para insertar los datos
-    const insertSql = `INSERT INTO excel_db_not_ssb (
-      \`#\`, Falla, Notif, Zona, Agencia, Tarifa, RPU, Cuenta, Nombre, \`Cálculo\`, \`Elaboró\`, Kwh,
-      \`$ Energía\`, \`$ IVA\`, \`$ DAP\`, \`$ Total\`, \`Fecha Ultimo Status\`, \`Status Actual\`, Sicoss, Mapa
-    ) VALUES ?`;
+    // Función para insertar bloques de datos
+    let batchIndex = 0;
+    async function insertNextBatch() {
+      if (batchIndex < batches.length) {
+        const batch = batches[batchIndex];
 
-    await pool.promise().query(insertSql, [values]);
+        const insertSql = `INSERT INTO excel_db_not_ssb (
+          \`#\`, Falla, Notif, Zona, Agencia, Tarifa, RPU, Cuenta, Nombre, \`Cálculo\`, \`Elaboró\`, Kwh,
+          \`$ Energía\`, \`$ IVA\`, \`$ DAP\`, \`$ Total\`, \`Fecha Ultimo Status\`, \`Status Actual\`, Sicoss, Mapa
+        ) VALUES ?`;
 
-    res.status(200).json({ message: 'Archivo subido y datos guardados en la base de datos exitosamente', file: req.file });
+        try {
+          await pool.promise().query(insertSql, [batch]);
+          console.log(`Bloque ${batchIndex + 1} insertado exitosamente.`);
+          batchIndex++;
+          insertNextBatch();
+        } catch (insertError) {
+          console.error('Error al insertar el bloque en la base de datos:', insertError);
+          res.status(500).json({ error: insertError.message });
+        }
+      } else {
+        res.status(200).json({ message: 'Todos los bloques fueron insertados correctamente.' });
+      }
+    }
+
+    // Iniciar la inserción del primer bloque
+    insertNextBatch();
+
   } catch (error) {
     console.error('Error al procesar el archivo Excel:', error);
     res.status(500).json({ error: error.message });

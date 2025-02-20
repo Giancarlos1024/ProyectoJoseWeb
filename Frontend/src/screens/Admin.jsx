@@ -11,7 +11,11 @@ const Admin = () => {
   const { username } = useContext(UserContext);
   const userRole = localStorage.getItem('userRole'); // Obtener el rol del usuario
   const [formattedDate, setFormattedDate] = useState('');
-  const isAdmin = userRole === 'Admin'; // Verificar si el usuario es Admin
+  // const isAdmin = userRole === 'Admin';
+
+  const allowedRoles = ['Admin', 'Jefe de Area']; // Lista de roles permitidos
+  const canAccessPanel = allowedRoles.includes(userRole);
+
   const [formularioSeleccionado, setFormularioSeleccionado] = useState('sinot'); // Estado para seleccionar el formulario
   const location = useLocation(); // Obtener la ruta actual
 
@@ -76,7 +80,7 @@ const Admin = () => {
         <div className="nav-container">
           <nav>
             <ul>
-              {isAdmin && ( // Solo muestra el Panel de control si el usuario es Admin
+              {canAccessPanel && ( // Solo muestra el Panel de Control si el usuario tiene un rol permitido
                 <li>
                   <NavLink
                     to="/admin/panel"
@@ -85,7 +89,11 @@ const Admin = () => {
                     {({ isActive }) => (
                       <>
                         {isActive && <div className="active-bar"></div>}
-                        <img src={isActive ? "/img/homeActivo.png" : "/img/home.png"} alt="error" className="iconNavDashboard" />
+                        <img 
+                          src={isActive ? "/img/homeActivo.png" : "/img/home.png"} 
+                          alt="icono del panel" 
+                          className="iconNavDashboard" 
+                        />
                         Panel de control
                       </>
                     )}

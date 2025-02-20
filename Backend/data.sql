@@ -104,11 +104,16 @@ CREATE TABLE IF NOT EXISTS usuarios(
     id INT AUTO_INCREMENT PRIMARY KEY,
     usuario VARCHAR(20) NOT NULL,
     contrasena VARCHAR(20) NOT NULL,
-    roles VARCHAR(50) NOT NULL
+    roles VARCHAR(50) NOT NULL,
+    creado_por VARCHAR(50) NOT NULL
 );
 
-INSERT INTO usuarios(usuario, contrasena, roles)
-VALUES('Admin','jose123*','Admin');
+
+
+
+INSERT INTO usuarios(usuario, contrasena, roles, creado_por)
+VALUES('Admin','jose123*','Admin','Admin');
+
 
 SELECT * FROM usuarios;
 

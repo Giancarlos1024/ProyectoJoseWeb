@@ -46,8 +46,16 @@ function convertExcelDate(excelDate) {
 }
 
 
+const batchSize = 5000;  // Tamaño del lote, es decir, 5000 registros por vez
 
-// Controlador para manejar la subida y procesamiento del archivo
+function chunkArray(array, size) {
+  const result = [];
+  for (let i = 0; i < array.length; i += size) {
+    result.push(array.slice(i, i + size));
+  }
+  return result;
+}
+
 const uploadFile = (req, res) => {
   upload(req, res, function (err) {
     if (err) {
@@ -112,6 +120,9 @@ const uploadFile = (req, res) => {
         row['Obs_term']
       ]);
 
+      // Dividir los datos en bloques de 5000 registros
+      const batches = chunkArray(values, batchSize);
+
       // Primero, borrar los datos existentes en la tabla
       pool.query('DELETE FROM excel_db_sinot', (deleteError) => {
         if (deleteError) {
@@ -119,23 +130,40 @@ const uploadFile = (req, res) => {
           return res.status(500).json({ error: deleteError.message });
         }
 
-        // Luego, insertar los nuevos datos
-        const sql = `INSERT INTO excel_db_sinot (
-          \`# Notif\`, \`Fecha Elab.\`, \`rpe_elaboronotif\`, \`Tarifa\`, \`Anomalía\`, \`Programa\`, \`Fecha Insp.\`,
-          \`rpe_inspeccion\`, \`tipo\`, \`Fecha Cál/Recal\`, \`RPE Calculó\`, \`Fecha Inicio\`, \`Fecha Final\`,
-          \`KHW Total\`, \`Imp. Energía\`, \`Imp. Total\`, \`Fecha Venta\`, \`rpe_venta\`, \`Operación\`, 
-          \`Fecha Operación\`, \`rpe_operacion\`, \`Nombre\`, \`Dirección\`, \`rpu\`, \`Ciudad\`, \`Cuenta\`,
-          \`Cve. Agen\`, \`Agencia\`, \`Zona.\`, \`Zona\`, \`medidor_inst\`, \`medidor_ret\`, \`Obs_notif\`, \`Obs_edo\`, \`Obs_term\`
-        ) VALUES ?`;
+        // Insertar los datos por bloques
+        let batchIndex = 0;
+        function insertNextBatch() {
+          if (batchIndex < batches.length) {
+            const batch = batches[batchIndex];
 
-        pool.query(sql, [values], (insertError, results) => {
-          if (insertError) {
-            console.error('Error al insertar en la base de datos:', insertError);
-            return res.status(500).json({ error: insertError.message });
+            // Inserta el bloque actual
+            const sql = `INSERT INTO excel_db_sinot (
+              \`# Notif\`, \`Fecha Elab.\`, \`rpe_elaboronotif\`, \`Tarifa\`, \`Anomalía\`, \`Programa\`, \`Fecha Insp.\`,
+              \`rpe_inspeccion\`, \`tipo\`, \`Fecha Cál/Recal\`, \`RPE Calculó\`, \`Fecha Inicio\`, \`Fecha Final\`,
+              \`KHW Total\`, \`Imp. Energía\`, \`Imp. Total\`, \`Fecha Venta\`, \`rpe_venta\`, \`Operación\`,
+              \`Fecha Operación\`, \`rpe_operacion\`, \`Nombre\`, \`Dirección\`, \`rpu\`, \`Ciudad\`, \`Cuenta\`,
+              \`Cve. Agen\`, \`Agencia\`, \`Zona.\`, \`Zona\`, \`medidor_inst\`, \`medidor_ret\`, \`Obs_notif\`, \`Obs_edo\`, \`Obs_term\`
+            ) VALUES ?`;
+
+            pool.query(sql, [batch], (insertError, results) => {
+              if (insertError) {
+                console.error('Error al insertar el bloque en la base de datos:', insertError);
+                return res.status(500).json({ error: insertError.message });
+              }
+
+              console.log(`Bloque ${batchIndex + 1} insertado exitosamente.`);
+
+              // Proceder al siguiente bloque
+              batchIndex++;
+              insertNextBatch();
+            });
+          } else {
+            res.status(200).json({ message: 'Todos los bloques fueron insertados correctamente.' });
           }
+        }
 
-          res.status(200).json({ message: 'Datos procesados e insertados correctamente.' });
-        });
+        // Iniciar la inserción del primer bloque
+        insertNextBatch();
       });
     } catch (error) {
       console.error('Error al procesar el archivo:', error);
@@ -143,6 +171,7 @@ const uploadFile = (req, res) => {
     }
   });
 };
+
 
 
 module.exports = {
