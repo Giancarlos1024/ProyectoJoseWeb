@@ -2,10 +2,10 @@ import React, { useState, useRef } from 'react';
 import uploadIcon from '/img/excel.png'; // Asegúrate de tener la ruta correcta
 import '../css/Formulario.css'; // Asegúrate de tener la ruta correcta
 
-const FileUploadNotssb = () => {
+const FileUploadNotssb = ({ onFileUpload2 }) => {
   const [fileName2, setFileName2] = useState('');
-  const [file, setFile2] = useState(null);
-  const [isLoading2, setIsLoading2] = useState(false); // Estado para la animación de carga
+  const [file2, setFile2] = useState(null);
+  const [isLoading2, setIsLoading2] = useState(false);
   const fileInputRef2 = useRef(null);
 
   const handleClick = () => {
@@ -26,12 +26,12 @@ const FileUploadNotssb = () => {
   const apiBaseUrl = import.meta.env.VITE_API_BASE_URL || 'http://localhost:3000';
 
   const handleUpload2 = () => {
-    if (file) {
-      setIsLoading2(true); // Activar animación de carga
+    if (file2) {
+      setIsLoading2(true);
       const formData = new FormData();
-      formData.append('file', file);
+      formData.append('file', file2);
 
-      fetch(`${apiBaseUrl}/apinot/upload2`, { // Cambia esta URL a la de tu endpoint
+      fetch(`${apiBaseUrl}/apinot/upload2`, {
         method: 'POST',
         body: formData,
       })
@@ -40,12 +40,14 @@ const FileUploadNotssb = () => {
           alert('Archivo cargado exitosamente Not ssb');
           setFileName2('');
           setFile2(null);
+          fileInputRef2.current.value = null;
+          onFileUpload2(); // Actualiza la tabla después de la importación
         })
         .catch(error => {
-          console.error('Error uploading file:', error);
+          console.error('Error al subir archivo:', error);
         })
         .finally(() => {
-          setIsLoading2(false); // Desactivar animación de carga
+          setIsLoading2(false);
         });
     }
   };
@@ -69,7 +71,7 @@ const FileUploadNotssb = () => {
           />
           {fileName2 && <p className="fileName">{fileName2}</p>}
         </div>
-        {file && (
+        {file2 && (
           <button className="uploadButton buttonArchivo" onClick={handleUpload2}>
             Subir Archivo
           </button>

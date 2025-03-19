@@ -65,6 +65,41 @@ export const Formulario = () => {
   };
 
 
+  // const unidades = ['cero', 'uno', 'dos', 'tres', 'cuatro', 'cinco', 'seis', 'siete', 'ocho', 'nueve'];
+  // const especiales = ['diez', 'once', 'doce', 'trece', 'catorce', 'quince', 'dieciséis', 'diecisiete', 'dieciocho', 'diecinueve'];
+  // const decenas = ['veinte', 'treinta', 'cuarenta', 'cincuenta', 'sesenta', 'setenta', 'ochenta', 'noventa'];
+  // const centenas = ['cien', 'doscientos', 'trescientos', 'cuatrocientos', 'quinientos', 'seiscientos', 'setecientos', 'ochocientos', 'novecientos'];
+
+
+  const unidades = ['CERO', 'UNO', 'DOS', 'TRES', 'CUATRO', 'CINCO', 'SEIS', 'SIETE', 'OCHO', 'NUEVE'];
+  const especiales = ['DIEZ', 'ONCE', 'DOCE', 'TRECE', 'CATORCE', 'QUINCE', 'DIECISÉIS', 'DIECISIETE', 'DIECIOCHO', 'DIECINUEVE'];
+  const decenas = ['VEINTE', 'TREINTA', 'CUARENTA', 'CINCUENTA', 'SESENTA', 'SETENTA', 'OCHENTA', 'NOVENTA'];
+  const centenas = ['CIEN', 'DOSCIENTOS', 'TRESCIENTOS', 'CUATROCIENTOS', 'QUINIENTOS', 'SEISCIENTOS', 'SETECIENTOS', 'OCHOCIENTOS', 'NOVECIENTOS'];
+
+  function numeroATexto(num) {
+      if (num === 0) return 'CERO';
+      if (num < 10) return unidades[num];
+      if (num < 20) return especiales[num - 10];
+      if (num < 100) {
+          return num % 10 === 0 ? decenas[Math.floor(num / 10) - 2] : `${decenas[Math.floor(num / 10) - 2]} Y ${unidades[num % 10]}`;
+      }
+      if (num < 1000) {
+          if (num === 100) return 'CIEN';
+          return num % 100 === 0 ? centenas[Math.floor(num / 100) - 1] : `${centenas[Math.floor(num / 100) - 1]} ${numeroATexto(num % 100)}`;
+      }
+      if (num < 1000000) {
+          const miles = Math.floor(num / 1000);
+          const resto = num % 1000;
+          return miles === 1
+              ? `MIL${resto === 0 ? '' : ' ' + numeroATexto(resto)}`
+              : `${numeroATexto(miles)} MIL${resto === 0 ? '' : ' ' + numeroATexto(resto)}`;
+      }
+      if (num === 1000000) return 'UN MILLÓN';
+      
+      return 'NÚMERO FUERA DE RANGO';
+  }
+
+
 
 
   
@@ -146,6 +181,15 @@ export const Formulario = () => {
     }
   };
   
+  const handleFileUpload = () => {
+    fetchGeneral();
+  };
+
+  const handleFileUpload2 = () => {
+    fetchGeneral();
+  };
+
+
   const generatePDF1 = (oficina, poblacionSeleccionada2, estado, cp, municipio) => {
 
     setPoblacionSeleccionada2(poblacionSeleccionada2);
@@ -240,7 +284,7 @@ export const Formulario = () => {
     });
 
     //Duplicacion 2 poblacion y cp2
-    firstPage.drawText(`${selectedOficina.Nombre}`, {
+    firstPage.drawText(`${selectedOficina.Nombre_sinot}`, {
         x: 150,
         y: height - 455,
         size: 7,
@@ -273,7 +317,7 @@ export const Formulario = () => {
     });
 
     //Duplicacion 3 poblacion y cp2
-    firstPage.drawText(`${selectedOficina.Nombre}`, {
+    firstPage.drawText(`${selectedOficina.Nombre_sinot}`, {
       x: 150,
       y: height - 672,
       size: 7,
@@ -322,6 +366,9 @@ export const Formulario = () => {
         console.error('No hay oficina seleccionada');
         return; // Salir si no hay oficina seleccionada
     }
+
+    const totalNumero = parseFloat(selectedOficina['$ Total']); // Asegurar que sea un número
+    const totalTexto = numeroATexto(Math.floor(totalNumero)); // Convertir a texto solo la parte entera
 
     const existingPdfBytes = await fetch('/pdf/Formato_FM_y_EF.pdf').then(res => res.arrayBuffer());
     const pdfDoc = await PDFDocument.load(existingPdfBytes);
@@ -410,21 +457,21 @@ export const Formulario = () => {
     // Dibujar cada parte en posiciones específicas
     firstPage.drawText(`${day}`, {
       x: 45,          // Posición X del día
-      y: height - 204, // Posición Y del día
+      y: height - 203, // Posición Y del día
       size: 10,
       color: rgb(0, 0, 0),
     });
 
     firstPage.drawText(`${month}`, {
       x: 74,          // Posición X del mes
-      y: height - 204, // Posición Y del mes
+      y: height - 203, // Posición Y del mes
       size: 10,
       color: rgb(0, 0, 0),
     });
 
     firstPage.drawText(`${year}`, {
       x: 130,          // Posición X del año
-      y: height - 204, // Posición Y del año
+      y: height - 203, // Posición Y del año
       size: 10,
       color: rgb(0, 0, 0),
     });
@@ -452,7 +499,7 @@ export const Formulario = () => {
     });
 
     firstPage.drawText(`${year2}`, {
-      x: 192,          // Posición X del año
+      x: 203,          // Posición X del año
       y: height - 334, // Posición Y del año
       size: 10,
       color: rgb(0, 0, 0),
@@ -465,28 +512,28 @@ export const Formulario = () => {
 
     // Dibujar cada parte en posiciones específicas
     firstPage.drawText(`${day3}`, {
-      x: 232,          // Posición X del día
+      x: 240,          // Posición X del día
       y: height - 334, // Posición Y del día
       size: 10,
       color: rgb(0, 0, 0),
     });
 
     firstPage.drawText(`${month3}`, {
-      x: 265,          // Posición X del mes
+      x: 268,          // Posición X del mes
       y: height - 334, // Posición Y del mes
       size: 10,
       color: rgb(0, 0, 0),
     });
 
     firstPage.drawText(`${year3}`, {
-      x: 326,          // Posición X del año
+      x: 330,          // Posición X del año
       y: height - 334, // Posición Y del año
       size: 10,
       color: rgb(0, 0, 0),
     });
 
     firstPage.drawText(`8550`, {
-      x: 362,          // Posición X del año
+      x: 353,          // Posición X del año
       y: height - 258, // Posición Y del año
       size: 10,
       color: rgb(0, 0, 0),
@@ -537,7 +584,7 @@ export const Formulario = () => {
             120,          // Posición inicial para los primeros 54 caracteres
             height - 270, // Altura inicial
             9,            // Tamaño de texto
-            45,           // Límite de caracteres para la primera línea
+            100,           // Límite de caracteres para la primera línea
             70,           // Nueva posición X para el resto
             92            // Límite de caracteres para el resto del texto
         );
@@ -580,9 +627,9 @@ export const Formulario = () => {
             205,      // Posición inicial para los primeros 54 caracteres
             height - 345, // Altura inicial
             9,            // Tamaño de texto
-            77,          // Límite de caracteres para la primera línea
+            90,          // Límite de caracteres para la primera línea
             35,           // Nueva posición X para el resto
-            92           // Límite de caracteres para el resto del texto
+            100           // Límite de caracteres para el resto del texto
         );
 
         // // Obtener la fecha actual y formatearla
@@ -608,21 +655,21 @@ export const Formulario = () => {
         // Dibujar cada parte en una posición diferente
         firstPage.drawText(dayValue.toString(), {
             x: 467,
-            y: height - 102,
+            y: height - 101,
             size: 10,
             color: rgb(0, 0, 0),
         });
 
         firstPage.drawText(monthValue, {
             x: 496, // Cambia la X para que no se sobrepongan
-            y: height - 102,
+            y: height - 101,
             size: 10,
             color: rgb(0, 0, 0),
         });
 
         firstPage.drawText(yearValue.toString(), {
             x: 550, // Ajusta la posición según necesites
-            y: height - 102,
+            y: height - 101,
             size: 10,
             color: rgb(0, 0, 0),
         });
@@ -642,10 +689,24 @@ export const Formulario = () => {
           color: rgb(0, 0, 0),
         });
 
-        firstPage.drawText(`${selectedOficina['$ Total']}`, {
-          x: 530,          // Posición X en la segunda página
-          y: height - 379, // Posición Y en la segunda página
+        // firstPage.drawText(`${selectedOficina['$ Total']}`, {
+        //   x: 540,          // Posición X en la segunda página
+        //   y: height - 379, // Posición Y en la segunda página
+        //   size: 10,
+        //   color: rgb(0, 0, 0),
+        // });
+
+        firstPage.drawText(`${totalNumero.toFixed(2)}`, { // Número con dos decimales
+          x: 540,
+          y: height - 379,
           size: 10,
+          color: rgb(0, 0, 0),
+        });
+  
+        firstPage.drawText(`( ${totalTexto} 00/100 M.N.)`, { // Texto del número
+          x: 36,
+          y: height - 389,
+          size: 8,
           color: rgb(0, 0, 0),
         });
 
@@ -717,6 +778,9 @@ export const Formulario = () => {
       return; // Salir si no hay oficina seleccionada
   }
 
+  const totalNumero = parseFloat(selectedOficina['$ Total']); // Asegurar que sea un número
+  const totalTexto = numeroATexto(Math.floor(totalNumero)); // Convertir a texto solo la parte entera
+
   const existingPdfBytes = await fetch('/pdf/Formato_FM_y_EF.pdf').then(res => res.arrayBuffer());
   const pdfDoc = await PDFDocument.load(existingPdfBytes);
   const pages = pdfDoc.getPages();
@@ -725,14 +789,14 @@ export const Formulario = () => {
   const { height } = firstPage.getSize();
 
   firstPage.drawText(`${selectedOficina.Nombre_sinot}`, {
-      x: 73,
-      y: height - 124,
+      x: 71,
+      y: height - 123,
       size: 9,
       color: rgb(0, 0, 0),
   });
   firstPage.drawText(`${selectedOficina.Dirección}`, {
-      x: 80,
-      y: height - 135,
+      x: 78,
+      y: height - 134,
       size: 9,
       color: rgb(0, 0, 0),
   });
@@ -752,27 +816,27 @@ export const Formulario = () => {
 
   firstPage.drawText(`${selectedOficina.rpu}`, {
       x: 63,
-      y: height - 146,
+      y: height - 145,
       size: 10,
       color: rgb(0, 0, 0),
   });
 
   firstPage.drawText(`${selectedOficina.RMU}`, {
-    x: 67,
-    y: height - 157,
+    x: 65,
+    y: height - 156,
     size: 10,
     color: rgb(0, 0, 0),
   });
 
   firstPage.drawText(`${selectedOficina.Cuenta}`, {
-    x: 71,
-    y: height - 168,
+    x: 69,
+    y: height - 167,
     size: 10,
     color: rgb(0, 0, 0),
   });
 
   firstPage.drawText(`${selectedOficina.GEO_X}, ${selectedOficina.GEO_Y}`, {
-    x: 125,
+    x: 124,
     y: height - 179,
     size: 10,
     color: rgb(0, 0, 0),
@@ -804,21 +868,21 @@ export const Formulario = () => {
   // Dibujar cada parte en posiciones específicas
   firstPage.drawText(`${day}`, {
     x: 45,          // Posición X del día
-    y: height - 204, // Posición Y del día
+    y: height - 203, // Posición Y del día
     size: 10,
     color: rgb(0, 0, 0),
   });
 
   firstPage.drawText(`${month}`, {
     x: 74,          // Posición X del mes
-    y: height - 204, // Posición Y del mes
+    y: height - 203, // Posición Y del mes
     size: 10,
     color: rgb(0, 0, 0),
   });
 
   firstPage.drawText(`${year}`, {
-    x: 130,          // Posición X del año
-    y: height - 204, // Posición Y del año
+    x: 131,          // Posición X del año
+    y: height - 203, // Posición Y del año
     size: 10,
     color: rgb(0, 0, 0),
   });
@@ -846,7 +910,7 @@ export const Formulario = () => {
   });
 
   firstPage.drawText(`${year2}`, {
-    x: 192,          // Posición X del año
+    x: 203,          // Posición X del año
     y: height - 334, // Posición Y del año
     size: 10,
     color: rgb(0, 0, 0),
@@ -859,29 +923,29 @@ export const Formulario = () => {
 
   // Dibujar cada parte en posiciones específicas
   firstPage.drawText(`${day3}`, {
-    x: 232,          // Posición X del día
+    x: 240,          // Posición X del día
     y: height - 334, // Posición Y del día
     size: 10,
     color: rgb(0, 0, 0),
   });
 
   firstPage.drawText(`${month3}`, {
-    x: 263,          // Posición X del mes
+    x: 266,          // Posición X del mes
     y: height - 334, // Posición Y del mes
     size: 10,
     color: rgb(0, 0, 0),
   });
 
   firstPage.drawText(`${year3}`, {
-    x: 326,          // Posición X del año
+    x: 330,          // Posición X del año
     y: height - 334, // Posición Y del año
     size: 10,
     color: rgb(0, 0, 0),
   });
 
   firstPage.drawText(`8550`, {
-    x: 362,          // Posición X del año
-    y: height - 258, // Posición Y del año
+    x: 354,          // Posición X del año
+    y: height - 257.5, // Posición Y del año
     size: 10,
     color: rgb(0, 0, 0),
   });
@@ -1002,21 +1066,21 @@ export const Formulario = () => {
       // Dibujar cada parte en una posición diferente
       firstPage.drawText(dayValue.toString(), {
           x: 467,
-          y: height - 102,
+          y: height - 101,
           size: 10,
           color: rgb(0, 0, 0),
       });
 
       firstPage.drawText(monthValue, {
           x: 496, // Cambia la X para que no se sobrepongan
-          y: height - 102,
+          y: height - 101,
           size: 10,
           color: rgb(0, 0, 0),
       });
 
       firstPage.drawText(yearValue.toString(), {
           x: 550, // Ajusta la posición según necesites
-          y: height - 102,
+          y: height - 101,
           size: 10,
           color: rgb(0, 0, 0),
       });
@@ -1031,15 +1095,29 @@ export const Formulario = () => {
 
       firstPage.drawText(`${selectedOficina.TARIFA}`, {
         x: 368,          // Posición X en la segunda página
-        y: height - 368, // Posición Y en la segunda página
+        y: height - 366.5, // Posición Y en la segunda página
         size: 10,
         color: rgb(0, 0, 0),
       });
 
-      firstPage.drawText(`${selectedOficina['$ Total']}`, {
-        x: 530,          // Posición X en la segunda página
-        y: height - 379, // Posición Y en la segunda página
+      // firstPage.drawText(`${selectedOficina['$ Total']}`, {
+      //   x: 530,          // Posición X en la segunda página
+      //   y: height - 379, // Posición Y en la segunda página
+      //   size: 10,
+      //   color: rgb(0, 0, 0),
+      // });
+
+      firstPage.drawText(`${totalNumero.toFixed(2)}`, { // Número con dos decimales
+        x: 540,
+        y: height - 379,
         size: 10,
+        color: rgb(0, 0, 0),
+      });
+
+      firstPage.drawText(`( ${totalTexto} 00/100 M.N.)`, { // Texto del número
+        x: 36,
+        y: height - 389,
+        size: 8,
         color: rgb(0, 0, 0),
       });
 
@@ -1108,6 +1186,10 @@ export const Formulario = () => {
     return; // Salir si no hay oficina seleccionada
   }
 
+  const totalNumero = parseFloat(selectedOficina['$ Total']); // Asegurar que sea un número
+  const totalTexto = numeroATexto(Math.floor(totalNumero)); // Convertir a texto solo la parte entera
+
+
   const existingPdfBytes = await fetch('/pdf/FormatoCobroAjuste_sin_contrato.pdf').then(res => res.arrayBuffer());
   const pdfDoc = await PDFDocument.load(existingPdfBytes);
   const pages = pdfDoc.getPages();
@@ -1165,21 +1247,21 @@ export const Formulario = () => {
 
   // Dibujar cada parte en posiciones específicas
   firstPage.drawText(`${day}`, {
-    x: 48,          // Posición X del día
+    x: 45,          // Posición X del día
     y: height - 205.5, // Posición Y del día
     size: 10,
     color: rgb(0, 0, 0),
   });
 
   firstPage.drawText(`${month}`, {
-    x: 72,          // Posición X del mes
+    x: 71,          // Posición X del mes
     y: height - 205.5, // Posición Y del mes
     size: 10,
     color: rgb(0, 0, 0),
   });
 
   firstPage.drawText(`${year}`, {
-    x: 120.5,          // Posición X del año
+    x: 127,          // Posición X del año
     y: height - 205.5, // Posición Y del año
     size: 10,
     color: rgb(0, 0, 0),
@@ -1187,8 +1269,8 @@ export const Formulario = () => {
 
 
   firstPage.drawText(`8550`, {
-    x: 295,          // Posición X del año
-    y: height - 255, // Posición Y del año
+    x: 284,          // Posición X del año
+    y: height - 258, // Posición Y del año
     size: 10,
     color: rgb(0, 0, 0),
   });
@@ -1228,13 +1310,13 @@ export const Formulario = () => {
 
       // Dibuja el texto de Obs_notif
       drawLimitedLineText(
-          `${selectedOficina.Obs_notif}`,
+          `${selectedOficina.Obs_edo}`,
           36,           // Posición inicial para los primeros 54 caracteres
           height - 300, // Altura inicial
-          9,            // Tamaño de texto
-          99,          // Límite de caracteres para la primera línea
+          8,            // Tamaño de texto
+          127,          // Límite de caracteres para la primera línea
           36,           // Nueva posición X para el resto
-          89            // Límite de caracteres para el resto del texto
+          100            // Límite de caracteres para el resto del texto
       );
 
       // Función para dibujar texto limitado en líneas
@@ -1320,7 +1402,7 @@ export const Formulario = () => {
       });
 
       firstPage.drawText(`${year2}`, {
-        x: 177.5,          // Posición X del año
+        x: 182,          // Posición X del año
         y: height - 330, // Posición Y del año
         size: 10,
         color: rgb(0, 0, 0),
@@ -1333,21 +1415,21 @@ export const Formulario = () => {
 
       // Dibujar cada parte en posiciones específicas
       firstPage.drawText(`${day3}`, {
-        x: 210,          // Posición X del día
+        x: 217,          // Posición X del día
         y: height - 330, // Posición Y del día
         size: 10,
         color: rgb(0, 0, 0),
       });
 
       firstPage.drawText(`${month3}`, {
-        x: 233,          // Posición X del mes
+        x: 246,          // Posición X del mes
         y: height - 330, // Posición Y del mes
         size: 10,
         color: rgb(0, 0, 0),
       });
 
       firstPage.drawText(`${year3}`, {
-        x: 280.5,          // Posición X del año
+        x: 288,          // Posición X del año
         y: height - 330, // Posición Y del año
         size: 10,
         color: rgb(0, 0, 0),
@@ -1355,7 +1437,7 @@ export const Formulario = () => {
 
 
       firstPage.drawText(`${selectedOficina.Khw_sinot}`, {
-        x: 375,          // Posición X en la segunda página
+        x: 385,          // Posición X en la segunda página
         y: height - 330, // Posición Y en la segunda página
         size: 10,
         color: rgb(0, 0, 0),
@@ -1370,17 +1452,33 @@ export const Formulario = () => {
 
       firstPage.drawText(`${selectedOficina.TARIFA}`, {
         x: 190,          // Posición X en la segunda página
-        y: height - 382, // Posición Y en la segunda página
+        y: height - 381.5, // Posición Y en la segunda página
         size: 10,
         color: rgb(0, 0, 0),
       });
 
-      firstPage.drawText(`${selectedOficina['$ Total']}`, {
-        x: 530,          // Posición X en la segunda página
-        y: height - 413.5, // Posición Y en la segunda página
+      // firstPage.drawText(`${selectedOficina['$ Total']}`, {
+      //   x: 530,          // Posición X en la segunda página
+      //   y: height - 413.5, // Posición Y en la segunda página
+      //   size: 10,
+      //   color: rgb(0, 0, 0),
+      // });
+
+      firstPage.drawText(` ${totalNumero.toFixed(2)}`, { // Número con dos decimales
+        x: 510,
+        y: height - 413,
         size: 10,
         color: rgb(0, 0, 0),
       });
+
+      firstPage.drawText(`( ${totalTexto} 00/100 M.N.)`, { // Texto del número
+        x: 36,
+        y: height - 424,
+        size: 8,
+        color: rgb(0, 0, 0),
+      });
+
+      
 
       // Escribe en la segunda página
       firstPage.drawText(`${selectedOficina['$ Energía']}`, {
@@ -1451,6 +1549,9 @@ export const Formulario = () => {
       return; // Salir si no hay oficina seleccionada
     }
   
+    const totalNumero = parseFloat(selectedOficina['$ Total']); // Asegurar que sea un número
+    const totalTexto = numeroATexto(Math.floor(totalNumero)); // Convertir a texto solo la parte entera
+
     const existingPdfBytes = await fetch('/pdf/FormatoCobroAjuste_con_contrato.pdf').then(res => res.arrayBuffer());
     const pdfDoc = await PDFDocument.load(existingPdfBytes);
     const pages = pdfDoc.getPages();
@@ -1544,7 +1645,7 @@ export const Formulario = () => {
     });
 
     firstPage.drawText(`${year}`, {
-      x: 125,          // Posición X del año
+      x: 128,          // Posición X del año
       y: height - 185, // Posición Y del año
       size: 10,
       color: rgb(0, 0, 0),
@@ -1552,7 +1653,7 @@ export const Formulario = () => {
 
 
     firstPage.drawText(`8550`, {
-      x: 340,          // Posición X del año
+      x: 339,          // Posición X del año
       y: height - 237, // Posición Y del año
       size: 10,
       color: rgb(0, 0, 0),
@@ -1598,7 +1699,7 @@ export const Formulario = () => {
             36,           // Posición inicial para los primeros 54 caracteres
             height - 277, // Altura inicial
             9,            // Tamaño de texto
-            99,          // Límite de caracteres para la primera línea
+            103,          // Límite de caracteres para la primera línea
             36,           // Nueva posición X para el resto
             87            // Límite de caracteres para el resto del texto
         );
@@ -1641,9 +1742,9 @@ export const Formulario = () => {
             225,           // Posición inicial para los primeros 54 caracteres
             height - 320, // Altura inicial
             8,            // Tamaño de texto
-            78,          // Límite de caracteres para la primera línea
+            82,          // Límite de caracteres para la primera línea
             35,           // Nueva posición X para el resto
-            120           // Límite de caracteres para el resto del texto
+            114           // Límite de caracteres para el resto del texto
         );
   
         // Obtener la fecha actual y formatearla
@@ -1685,22 +1786,22 @@ export const Formulario = () => {
 
         // Dibujar cada parte en posiciones específicas
         firstPage.drawText(`${day2}`, {
-          x: 182,          // Posición X del día
-          y: height - 310, // Posición Y del día
+          x: 180,          // Posición X del día
+          y: height - 310.5, // Posición Y del día
           size: 10,
           color: rgb(0, 0, 0),
         });
 
         firstPage.drawText(`${month2}`, {
           x: 208,          // Posición X del mes
-          y: height - 310, // Posición Y del mes
+          y: height - 310.5, // Posición Y del mes
           size: 10,
           color: rgb(0, 0, 0),
         });
 
         firstPage.drawText(`${year2}`, {
-          x: 263,          // Posición X del año
-          y: height - 310, // Posición Y del año
+          x: 266,          // Posición X del año
+          y: height - 310.5, // Posición Y del año
           size: 10,
           color: rgb(0, 0, 0),
         });
@@ -1712,22 +1813,22 @@ export const Formulario = () => {
 
         // Dibujar cada parte en posiciones específicas
         firstPage.drawText(`${day3}`, {
-          x: 293,          // Posición X del día
-          y: height - 310, // Posición Y del día
+          x: 300,          // Posición X del día
+          y: height - 310.5, // Posición Y del día
           size: 10,
           color: rgb(0, 0, 0),
         });
 
         firstPage.drawText(`${month3}`, {
-          x: 318,          // Posición X del mes
-          y: height - 310, // Posición Y del mes
+          x: 327,          // Posición X del mes
+          y: height - 310.5, // Posición Y del mes
           size: 10,
           color: rgb(0, 0, 0),
         });
 
         firstPage.drawText(`${year3}`, {
-          x: 375,          // Posición X del año
-          y: height - 310, // Posición Y del año
+          x: 380,          // Posición X del año
+          y: height - 310.5, // Posición Y del año
           size: 10,
           color: rgb(0, 0, 0),
         });
@@ -1742,15 +1843,29 @@ export const Formulario = () => {
 
         firstPage.drawText(`${selectedOficina.TARIFA}`, {
           x: 370,          // Posición X en la segunda página
-          y: height - 350, // Posición Y en la segunda página
-          size: 10,
+          y: height - 352, // Posición Y en la segunda página
+          size: 9,
           color: rgb(0, 0, 0),
         });
 
-        firstPage.drawText(`${selectedOficina['$ Total']}`, {
-          x: 533,          // Posición X en la segunda página
-          y: height - 362, // Posición Y en la segunda página
+        // firstPage.drawText(`${selectedOficina['$ Total']}`, {
+        //   x: 533,          // Posición X en la segunda página
+        //   y: height - 362, // Posición Y en la segunda página
+        //   size: 10,
+        //   color: rgb(0, 0, 0),
+        // });
+
+        firstPage.drawText(` ${totalNumero.toFixed(2)}`, { // Número con dos decimales
+          x: 518,
+          y: height - 362,
           size: 10,
+          color: rgb(0, 0, 0),
+        });
+  
+        firstPage.drawText(`( ${totalTexto} 00/100 M.N.)`, { // Texto del número
+          x: 36,
+          y: height - 371.5,
+          size: 8,
           color: rgb(0, 0, 0),
         });
 
@@ -1915,8 +2030,8 @@ export const Formulario = () => {
       <div className='contenedor-filtro'>
         {userRole === 'Admin' && (
           <div className='importExcel'>
-            <FileUpload />
-            <FileUploadNotssb />
+            <FileUpload onFileUpload={handleFileUpload}/>
+            <FileUploadNotssb onFileUpload2={handleFileUpload2} />
           </div>
         )}
 

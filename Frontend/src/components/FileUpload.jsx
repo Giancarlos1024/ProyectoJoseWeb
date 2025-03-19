@@ -1,12 +1,14 @@
-import React, { useState, useRef } from 'react';
-import uploadIcon from '/img/excel.png'; // Asegúrate de tener la ruta correcta
-import '../css/Formulario.css'; // Asegúrate de tener la ruta correcta
+import React, { useState, useRef, useEffect } from 'react';
+import uploadIcon from '/img/excel.png'; // Ruta correcta
+import '../css/Formulario.css'; // Ruta correcta
 
-const FileUpload = () => {
+const FileUpload = ({ onFileUpload }) => {
   const [fileName, setFileName] = useState('');
   const [file, setFile] = useState(null);
-  const [isLoading, setIsLoading] = useState(false); // Estado para mostrar la animación de carga
+  const [isLoading, setIsLoading] = useState(false);
   const fileInputRef = useRef(null);
+
+  const apiBaseUrl = import.meta.env.VITE_API_BASE_URL || 'http://localhost:3000';
 
   const handleClick = () => {
     fileInputRef.current.click();
@@ -23,11 +25,9 @@ const FileUpload = () => {
     }
   };
 
-  const apiBaseUrl = import.meta.env.VITE_API_BASE_URL || 'http://localhost:3000';
-
   const handleUpload = () => {
     if (file) {
-      setIsLoading(true); // Activar la animación de carga
+      setIsLoading(true);
       const formData = new FormData();
       formData.append('file', file);
 
@@ -37,15 +37,17 @@ const FileUpload = () => {
       })
         .then(response => response.json())
         .then(data => {
-          alert('Archivo cargado exitosamente Sinot');
+          alert('Archivo cargado exitosamente.');
           setFileName('');
           setFile(null);
+          fileInputRef.current.value = null;
+          onFileUpload(); // Llama a la función para actualizar la tabla
         })
         .catch(error => {
-          console.error('Error uploading file:', error);
+          console.error('Error al subir archivo:', error);
         })
         .finally(() => {
-          setIsLoading(false); // Desactivar la animación de carga
+          setIsLoading(false);
         });
     }
   };
