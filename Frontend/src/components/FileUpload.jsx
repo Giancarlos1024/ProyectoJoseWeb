@@ -31,7 +31,7 @@ const FileUpload = ({ onFileUpload }) => {
       const formData = new FormData();
       formData.append('file', file);
 
-      fetch(`${apiBaseUrl}/api/upload`, {
+      fetch(`${apiBaseUrl}/apupload/upload`, {
         method: 'POST',
         body: formData,
       })
