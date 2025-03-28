@@ -8,15 +8,15 @@ const port = process.env.PORT || 3000;  // Usa 5001 ya que ese es el puerto de t
 
 
 // Configuración de CORS
-const corsOptions = {
-  origin: 'http://192.168.1.103:5001', // Cambia a tu URL de Render o localhost
-  optionsSuccessStatus: 200,
-};
-
 // const corsOptions = {
-//   origin: 'http://localhost:5173', // Cambia a tu URL de Render o localhost
+//   origin: 'http://192.168.1.103:5001', // Cambia a tu URL de Render o localhost
 //   optionsSuccessStatus: 200,
 // };
+
+const corsOptions = {
+  origin: 'http://localhost:5173', // Cambia a tu URL de Render o localhost
+  optionsSuccessStatus: 200,
+};
 
 app.use(cors(corsOptions));
 app.use(express.json());

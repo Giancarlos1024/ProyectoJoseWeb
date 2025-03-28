@@ -8,7 +8,6 @@ import FileUpload from './FileUpload';
 import FileUploadNotssb from './FileUploadNotssb';
 
 export const Formulario = () => {
-  
   const [oficinas, setOficinas] = useState([]);
   const [dataGeneral, setDataGeneral] = useState([]);
   const [filters, setFilters] = useState({
@@ -21,22 +20,15 @@ export const Formulario = () => {
   const [selectedPDF, setSelectedPDF] = useState(null); // Estado para tipo de PDF
   const [userRole, setUserRole] = useState(localStorage.getItem('userRole') || 'user'); // Obtener rol del localStorage
   const [selectedOficina, setSelectedOficina] = useState(null);
-
-  
-
   const [poblaciones, setPoblaciones] = useState([]);
   const [poblacionSeleccionada2, setPoblacionSeleccionada2] = useState(''); // Selección actual
-
   const[estado, setEstado] = useState('')
   const[cp, setCp] = useState('')
   const[cp2, setCp2] = useState('')
   const[municipio, setMunicipio] = useState('')
-
   const [fallaTipo, setFallaTipo] = useState(null);
 
-
-  // console.log("datos general :",dataGeneral)
-
+  console.log("datos generales",dataGeneral);
   const apiBaseUrl = import.meta.env.VITE_API_BASE_URL || 'http://localhost:3000';
   const cpToPoblaciones = {
     '46056': { poblaciones: ['SOCONITA MEZQUITOC'], estado: 'NAYARIT', municipio: 'MEZQUITIC' },
@@ -146,10 +138,10 @@ export const Formulario = () => {
     fetch(`${apiBaseUrl}/general?${new URLSearchParams({ ...filters, page: currentPage, limit: 10 })}`)
       .then(response => response.json())
       .then(data => {
-        // Verificar la estructura correcta
         if (Array.isArray(data.data)) {
-          setDataGeneral(data.data); // Actualiza las oficinas
-          setTotalPages(data.totalPages); // Actualiza el número total de páginas
+          setDataGeneral(data.data);
+          // console.log("data de general", data);
+          setTotalPages(data.totalPages);
         } else {
           console.error('La respuesta del servidor no tiene la estructura esperada:', data);
           setDataGeneral([]);
@@ -157,9 +149,10 @@ export const Formulario = () => {
       })
       .catch(error => {
         console.error('Error al obtener las oficinas:', error);
-        setOficinas([]); // Establecer un array vacío en caso de error
+        setDataGeneral([]); // Ajustado de setOficinas([]) a setDataGeneral([])
       });
   };
+
   
   useEffect(() => {
     fetchGeneral();
@@ -167,11 +160,12 @@ export const Formulario = () => {
 
   const handleFilterChange = (e) => {
     const { name, value } = e.target;
-    setFilters({ ...filters, [name]: value });
-  };
+    setFilters(prevFilters => ({ ...prevFilters, [name]: value }));
+};
+
 
   const applyFilters = () => {
-    console.log(filters); // Verifica los valores de los filtros
+    console.log("Filtros aplicados:", filters);
     fetchGeneral();
   };
   const handlePageChange = (newPage) => {
@@ -200,6 +194,7 @@ export const Formulario = () => {
       unit: 'px',
       format: [300, 700],
     });
+
     // Añadir el logo
     const logoWidth = 250;
     const logoHeight = 50;
@@ -403,7 +398,7 @@ export const Formulario = () => {
   //     color: rgb(0, 0, 0),
   // });
 
-    firstPage.drawText(`${selectedOficina.rpu}`, {
+    firstPage.drawText(`${selectedOficina.RPU}`, {
         x: 63,
         y: height - 146,
         size: 10,
@@ -682,7 +677,7 @@ export const Formulario = () => {
           color: rgb(0, 0, 0),
         });
 
-        firstPage.drawText(`${selectedOficina.TARIFA}`, {
+        firstPage.drawText(`${selectedOficina.Tarifa}`, {
           x: 368,          // Posición X en la segunda página
           y: height - 368, // Posición Y en la segunda página
           size: 10,
@@ -814,7 +809,7 @@ export const Formulario = () => {
 //     color: rgb(0, 0, 0),
 // });
 
-  firstPage.drawText(`${selectedOficina.rpu}`, {
+  firstPage.drawText(`${selectedOficina.RPU}`, {
       x: 63,
       y: height - 145,
       size: 10,
@@ -1093,7 +1088,7 @@ export const Formulario = () => {
         color: rgb(0, 0, 0),
       });
 
-      firstPage.drawText(`${selectedOficina.TARIFA}`, {
+      firstPage.drawText(`${selectedOficina.Tarifa}`, {
         x: 368,          // Posición X en la segunda página
         y: height - 366.5, // Posición Y en la segunda página
         size: 10,
@@ -1450,7 +1445,7 @@ export const Formulario = () => {
         color: rgb(0, 0, 0),
       });
 
-      firstPage.drawText(`${selectedOficina.TARIFA}`, {
+      firstPage.drawText(`${selectedOficina.Tarifa}`, {
         x: 190,          // Posición X en la segunda página
         y: height - 381.5, // Posición Y en la segunda página
         size: 10,
@@ -1579,7 +1574,7 @@ export const Formulario = () => {
     //   color: rgb(0, 0, 0),
     // });
   
-    firstPage.drawText(`${selectedOficina.rpu}`, {
+    firstPage.drawText(`${selectedOficina.RPU}`, {
         x: 63,
         y: height - 131,
         size: 10,
@@ -1841,7 +1836,7 @@ export const Formulario = () => {
           color: rgb(0, 0, 0),
         });
 
-        firstPage.drawText(`${selectedOficina.TARIFA}`, {
+        firstPage.drawText(`${selectedOficina.Tarifa}`, {
           x: 370,          // Posición X en la segunda página
           y: height - 352, // Posición Y en la segunda página
           size: 9,
@@ -2083,7 +2078,7 @@ export const Formulario = () => {
                 <td>{data.Falla}</td>
                 <td>{data.Nombre_sinot}</td>
                 <td>{data.Dirección}</td>
-                <td>{data.rpu}</td>
+                <td>{data.RPU}</td>
                 {/* <td>{data.Ciudad}</td> */}
                 <td>{data.Cuenta}</td>
                 <td>{data.Agencia}</td>
